@@ -6,4 +6,9 @@ export class BreakPointConstants {
   static readonly CURRENT_BP: string = 'current_breakpoint'
 }
 
+export class SafeAreaConstants {
+  static readonly TOP: string = 'top'
+  static readonly BOTTOM: string = 'bottom'
+}
+
 
