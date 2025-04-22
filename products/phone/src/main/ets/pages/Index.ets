@@ -45,12 +45,7 @@ struct Index {
     .onTabBarClick(index => {
       this.activeIndex = index
     })
-    //The item does not appear in the watch scene, so only 3 properties are needed
-    .barPosition(new BreakPointType({
-      sm: BarPosition.End,
-      md: BarPosition.End,
-      lg: BarPosition.Start
-    }).getValue(this.breakPoint))
+    .barPosition(this.breakPoint === BreakPointConstants.LG ? BarPosition.Start : BarPosition.End)
     .vertical(this.breakPoint === BreakPointConstants.LG)
   }
 }
