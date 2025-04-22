@@ -1,3 +1,4 @@
+import { BreakPointConstants, BreakPointType } from 'basic'
 import { DiscountGoodsComp, DiscountType } from '../components/DiscountGoodsComp'
 import { MkGoods } from '../components/MkGoods'
 import { Banner, CategoryItem, MkGoodsItem, Params } from '../viewmodel'
@@ -5,22 +6,23 @@ import { Banner, CategoryItem, MkGoodsItem, Params } from '../viewmodel'
 
 @ComponentV2
 export struct HomeView {
-  // 轮播图
+  // carousel
   @Local banners: Banner[] = []
-  // 分类
+  // classify
   @Local categories: CategoryItem[] = []
-  // 特惠推荐
+  // specialOffers
   @Local saleGoods: MkGoodsItem[] = []
-  // 爆款推荐
+  // explosiveRecommendation
   @Local hotGoods: MkGoodsItem[] = []
-  // 一站买全
+  // buyItAllInOneStop
   @Local oneGoods: MkGoodsItem[] = []
-  // 新鲜好物
+  // freshAndGood
   @Local newGoods: MkGoodsItem[] = []
-  // 推荐商品
+  // recommendedProducts
   @Local recommendGoods: MkGoodsItem[] = []
+  breakPoint: string = AppStorage.get(BreakPointConstants.CURRENT_BP) as string
 
-  // 生成模拟数据
+  // generateSimulationData
   mockData() {
     this.banners = new Array(6).fill({
       id: "42",
@@ -118,10 +120,14 @@ export struct HomeView {
     .borderRadius(8)
   }
 
+  getSpace(): number | undefined {
+    return new BreakPointType({ sm: 14, md: 36, lg: 72 }).getValue(this.breakPoint)
+  }
+
   build() {
     Scroll() {
       Column() {
-        // 轮播图 + 搜索
+        // carousel and Search
         Stack({ alignContent: Alignment.Top }) {
           Swiper() {
             ForEach(this.banners, (item: Banner) => {
@@ -129,13 +135,21 @@ export struct HomeView {
             })
           }
           .indicator(
-            DotIndicator.dot()
+            this.breakPoint === BreakPointConstants.SM ? DotIndicator.dot()
               .itemWidth(8)
               .itemHeight(4)
               .color('#33191919')
               .selectedItemWidth(24)
               .selectedItemHeight(4)
-              .selectedColor('#191919')
+              .selectedColor('#191919') : false
+          )
+          .displayCount(
+            new BreakPointType({ sm: 1, md: 2, lg: 3})
+              .getValue(this.breakPoint)
+          )
+          .itemSpace(
+            new BreakPointType({ sm: 0, md: 10, lg: 20})
+              .getValue(this.breakPoint)
           )
 
           Row() {
@@ -159,10 +173,10 @@ export struct HomeView {
         .width('100%')
 
 
-        // 分类
+        // classify
         Column({ space: 10 }) {
-          // 分类
-          List({ space: 16 }) {
+          // classify
+          List({ space: this.getSpace() }) {
             ForEach(this.categories, (item: CategoryItem) => {
               ListItem() {
                 Column() {
@@ -194,7 +208,7 @@ export struct HomeView {
           .listDirection(Axis.Horizontal)
           .alignListItem(ListItemAlign.Center)
 
-          // 特惠推荐
+          // specialOffers
           Column({ space: 10 }) {
             Image($r('app.media.home_cmd_title'))
               .width(150)
@@ -203,7 +217,7 @@ export struct HomeView {
               Image($r('app.media.home_cmd_inner'))
                 .width(86)
                 .height(116)
-              List({ space: 10 }) {
+              List({ space: this.getSpace() }) {
                 ForEach(this.saleGoods, (item: MkGoodsItem) => {
                   ListItem() {
                     DiscountGoodsComp({ goods: item })
@@ -231,7 +245,7 @@ export struct HomeView {
           .padding(10)
           .alignItems(HorizontalAlign.Start)
 
-          // 爆款推荐+一站买全
+          // explosiveRecommendation   buyItAllInOneStop
           Row({ space: 10 }) {
             this.DiscountBuilder({
               title: '爆款推荐',
@@ -247,12 +261,12 @@ export struct HomeView {
             })
           }
 
-          // 新鲜好物
+          // freshAndGood
           Column({ space: 10 }) {
             Image($r('app.media.home_new'))
               .width(146)
               .height(19)
-            List({ space: 10 }) {
+            List({ space: this.getSpace() }) {
               ForEach(this.newGoods, (item: MkGoodsItem) => {
                 ListItem() {
                   DiscountGoodsComp({ type: DiscountType.NEW, goods: item })
@@ -271,7 +285,7 @@ export struct HomeView {
           .borderRadius(8)
           .alignItems(HorizontalAlign.Start)
 
-          // 推荐商品
+          // recommendedProducts
           WaterFlow() {
             ForEach(this.recommendGoods, (item: MkGoodsItem) => {
               FlowItem() {
@@ -279,7 +293,13 @@ export struct HomeView {
               }
             })
           }
-          .columnsTemplate('1fr 1fr')
+          .columnsTemplate(
+            new BreakPointType({
+              sm: '1fr 1fr',
+              md: '1fr 1fr 1fr',
+              lg: '1fr 1fr 1fr 1fr'
+            }).getValue(this.breakPoint)
+          )
           .columnsGap(8)
           .rowsGap(10)
 
