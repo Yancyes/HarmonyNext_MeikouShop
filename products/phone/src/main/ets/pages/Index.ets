@@ -1,4 +1,4 @@
-import { BreakPointConstants, BreakPointType } from 'basic'
+import { BreakPointConstants } from 'basic'
 
 interface TabItem {
   text: string
@@ -10,7 +10,7 @@ interface TabItem {
 @ComponentV2
 struct Index {
   @Local activeIndex: number = 0
-  @Local breakPoint: string = AppStorage.get(BreakPointConstants.CURRENT_BP) as string
+  breakPoint: string = AppStorage.get(BreakPointConstants.CURRENT_BP) as string
   list: TabItem[] = [
     { text: '首页', normal: $r('app.media.ic_public_home_normal'), active: $r('app.media.ic_public_home_active') },
     { text: '分类', normal: $r('app.media.ic_public_pro_normal'), active: $r('app.media.ic_public_pro_active') },
