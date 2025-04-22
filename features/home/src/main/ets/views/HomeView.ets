@@ -1,4 +1,4 @@
-import { BreakPointConstants, BreakPointType } from 'basic'
+import { BreakPointConstants, BreakPointType, SafeAreaConstants } from 'basic'
 import { DiscountGoodsComp, DiscountType } from '../components/DiscountGoodsComp'
 import { MkGoods } from '../components/MkGoods'
 import { Banner, CategoryItem, MkGoodsItem, Params } from '../viewmodel'
@@ -21,7 +21,7 @@ export struct HomeView {
   // recommendedProducts
   @Local recommendGoods: MkGoodsItem[] = []
   breakPoint: string = AppStorage.get(BreakPointConstants.CURRENT_BP) as string
-
+  safeTop:number = AppStorage.get(SafeAreaConstants.TOP) as number
   // generateSimulationData
   mockData() {
     this.banners = new Array(6).fill({
@@ -168,7 +168,7 @@ export struct HomeView {
             .borderRadius(20)
             .padding({ left: 12 })
           }
-          .padding({ left: 16, right: 16 })
+          .padding({ left: 16, right: 16,top: this.safeTop })
         }
         .width('100%')
 
