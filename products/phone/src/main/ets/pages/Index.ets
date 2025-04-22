@@ -1,4 +1,8 @@
-import { BreakPointConstants } from 'basic'
+import { BreakPointConstants, SafeAreaConstants } from 'basic'
+import { CartView } from 'cart'
+import { CategoryView } from 'category'
+import { HomeView } from 'home'
+import { MyView } from 'my'
 
 interface TabItem {
   text: string
@@ -17,6 +21,37 @@ struct Index {
     { text: '购物袋', normal: $r('app.media.ic_public_cart_normal'), active: $r('app.media.ic_public_cart_active') },
     { text: '我的', normal: $r('app.media.ic_public_my_normal'), active: $r('app.media.ic_public_my_active') },
   ]
+  navPath: NavPathStack = new NavPathStack()
+  safeBottom: number = AppStorage.get(SafeAreaConstants.BOTTOM) as number
+
+  build() {
+    Navigation(this.navPath) {
+      Tabs({ barPosition: BarPosition.End }) {
+        ForEach(this.list, (item: TabItem, index: number) => {
+          TabContent() {
+            if (index === 0) {
+              HomeView()
+            } else if (index === 1) {
+              CategoryView()
+            } else if (index === 2) {
+              CartView()
+            } else {
+              MyView()
+            }
+          }.tabBar(this.TabItemBuilder(item, index))
+        })
+      }
+      .animationDuration(0)
+      .scrollable(false)
+      .onTabBarClick(index => {
+        this.activeIndex = index
+      })
+      .barPosition(this.breakPoint === BreakPointConstants.LG ? BarPosition.Start : BarPosition.End)
+      .vertical(this.breakPoint === BreakPointConstants.LG)
+      .padding({ bottom: this.safeBottom })
+    }.mode(NavigationMode.Stack)
+    .hideTitleBar(true)
+  }
 
   @Builder
   TabItemBuilder(item: TabItem, index: number) {
@@ -30,22 +65,5 @@ struct Index {
     }
     .justifyContent(FlexAlign.SpaceEvenly)
     .height(50)
-  }
-
-  build() {
-    Tabs({ barPosition: BarPosition.End }) {
-      ForEach(this.list, (item: TabItem, index: number) => {
-        TabContent() {
-
-        }
-        .tabBar(this.TabItemBuilder(item, index))
-      })
-    }
-    .scrollable(false)
-    .onTabBarClick(index => {
-      this.activeIndex = index
-    })
-    .barPosition(this.breakPoint === BreakPointConstants.LG ? BarPosition.Start : BarPosition.End)
-    .vertical(this.breakPoint === BreakPointConstants.LG)
   }
 }
