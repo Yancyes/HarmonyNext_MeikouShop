@@ -1,0 +1,32 @@
+import { Https } from 'basic'
+import { Banner, CategoryItem, HotResult, MkGoodsItem } from '../viewmodel'
+
+export const getBannerAPI = () => {
+  return Https.get<Banner[]>('/home/banner')
+}
+
+export const getCategoryAPI = () => {
+  return Https.get<CategoryItem[]>('/home/category/head')
+}
+
+export const getHotPreferenceAPI = () => {
+  return Https.get<HotResult>('/hot/preference')
+}
+
+export const getHotInVogueAPI = () => {
+  return Https.get<HotResult>('/hot/inVogue')
+}
+
+export const getHotOneStopAPI = () => {
+  return Https.get<HotResult>('/hot/oneStop')
+}
+
+export const getNewAPI = () => {
+  return Https.get<MkGoodsItem[]>('/home/new')
+}
+
+/**
+ * @param limit the Amount Of Data Requested At Once */
+export const getRecommendAPI = (limit: number = 8) => {
+  return Https.get<MkGoodsItem[]>('/home/recommend', new Object({ limit }))
+}
