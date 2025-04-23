@@ -1,7 +1,16 @@
 import { BreakPointConstants, BreakPointType, SafeAreaConstants } from 'basic'
+import {
+  getBannerAPI,
+  getCategoryAPI,
+  getHotInVogueAPI,
+  getHotOneStopAPI,
+  getHotPreferenceAPI,
+  getNewAPI
+} from '../api'
 import { DiscountGoodsComp, DiscountType } from '../components/DiscountGoodsComp'
 import { MkGoods } from '../components/MkGoods'
-import { Banner, CategoryItem, MkGoodsItem, Params } from '../viewmodel'
+import { Banner, CategoryItem, HotResult, MkGoodsItem, Params } from '../viewmodel'
+import { promptAction } from '@kit.ArkUI'
 
 
 @ComponentV2
@@ -21,68 +30,41 @@ export struct HomeView {
   // recommendedProducts
   @Local recommendGoods: MkGoodsItem[] = []
   breakPoint: string = AppStorage.get(BreakPointConstants.CURRENT_BP) as string
-  safeTop:number = AppStorage.get(SafeAreaConstants.TOP) as number
-  // generateSimulationData
-  mockData() {
-    this.banners = new Array(6).fill({
-      id: "42",
-      imgUrl: "https://yjy-teach-oss.oss-cn-beijing.aliyuncs.com/meikou/banner/nuandong_sj.png",
-      hrefUrl: "/category/1181622006",
-      type: "1"
-    })
+  safeTop: number = AppStorage.get(SafeAreaConstants.TOP) as number
 
-    this.categories = new Array(10).fill({
-      id: "1181622001",
-      name: "气质女装",
-      picture: "https://yjy-teach-oss.oss-cn-beijing.aliyuncs.com/meikou/c1/qznz.png"
-    })
+  async getData() {
+    //waitForAllPromisesToResolve
+    const resData = await Promise.allSettled([
+      getBannerAPI(),
+      getCategoryAPI(),
+      getHotPreferenceAPI(),
+      getHotInVogueAPI(),
+      getHotOneStopAPI(),
+      getNewAPI()
+    ])
+    //Throwing an exception prevents a crash caused by the inability to obtain data
+    try {
+      //traversal promise
+      resData.forEach((item, index) => {
+        if (item.status == 'fulfilled') {
+          //renderData
+          if(index===0) this.banners = item.value.data.result as Banner[]
+          if(index===1) this.categories = item.value.data.result as CategoryItem[]
+          if(index===2) this.saleGoods = (item.value.data.result as HotResult).subTypes[0].goodsItems.items
+          if(index===3) this.hotGoods = (item.value.data.result as HotResult).subTypes[0].goodsItems.items
+          if(index===4) this.oneGoods = (item.value.data.result as HotResult).subTypes[0].goodsItems.items
+          if(index===5) this.newGoods = item.value.data.result as MkGoodsItem[]
+        }
+      })
+    } catch (e) {
+        promptAction.showToast({message:JSON.stringify(e)})
+    }
 
-    this.saleGoods = new Array(6).fill({
-      "id": "1111002",
-      "name": "剪出精致感，金致圆柄复古剪刀",
-      "desc": "轻薄设计，简约大方",
-      "price": "9.90",
-      "picture": "https://yanxuan-item.nosdn.127.net/4c6a9c8a579b00e5e9c7b002d15a33a2.jpg",
-      "orderNum": 172
-    },)
-
-    this.hotGoods = new Array(8).fill({
-      "id": "1135059",
-      "name": "手工八年老陈醋500毫升",
-      "desc": "地道醇香，醋酸浓郁",
-      "price": "30.00",
-      "picture": "https://yanxuan-item.nosdn.127.net/77da20e77b02830a26f931901ac1a9e0.png",
-      "orderNum": 147
-    },)
-    this.oneGoods = new Array(8).fill({
-      "id": "1135079",
-      "name": "免浸泡，12种谷物一次同享，五谷米400克",
-      "desc": "无需浸泡，同煮同熟",
-      "price": "9.90",
-      "picture": "https://yanxuan-item.nosdn.127.net/bfe70bd66efe94f2f18061c707d2a097.png",
-      "orderNum": 144
-    })
-    this.newGoods = new Array(8).fill({
-      "id": "4027998",
-      "name": "亮碟多效合一洗涤块495g",
-      "desc": "洗碗机专用，强力去污",
-      "price": "69.90",
-      "picture": "https://yanxuan-item.nosdn.127.net/e07c2b63765cf9f4a46d489c6e09c1c1.jpg",
-      "orderNum": 643
-    })
-
-    this.recommendGoods = new Array(8).fill({
-      "id": "4033959",
-      "name": "3秒快速拆琴轻松保养odin奥丁12半音阶口琴",
-      "price": 329,
-      "picture": "https://yanxuan-item.nosdn.127.net/937a8e46a9284e8f7e00e13911ecfbe7.png",
-      "payCount": 0
-    })
   }
 
   aboutToAppear(): void {
-    // mock数据
-    this.mockData()
+    //get the Data Of The Server Response
+    this.getData()
 
   }
 
@@ -144,11 +126,11 @@ export struct HomeView {
               .selectedColor('#191919') : false
           )
           .displayCount(
-            new BreakPointType({ sm: 1, md: 2, lg: 3})
+            new BreakPointType({ sm: 1, md: 2, lg: 3 })
               .getValue(this.breakPoint)
           )
           .itemSpace(
-            new BreakPointType({ sm: 0, md: 10, lg: 20})
+            new BreakPointType({ sm: 0, md: 10, lg: 20 })
               .getValue(this.breakPoint)
           )
 
@@ -168,7 +150,7 @@ export struct HomeView {
             .borderRadius(20)
             .padding({ left: 12 })
           }
-          .padding({ left: 16, right: 16,top: this.safeTop })
+          .padding({ left: 16, right: 16, top: this.safeTop })
         }
         .width('100%')
 
