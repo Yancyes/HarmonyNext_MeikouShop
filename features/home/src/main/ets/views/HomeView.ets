@@ -5,12 +5,14 @@ import {
   getHotInVogueAPI,
   getHotOneStopAPI,
   getHotPreferenceAPI,
-  getNewAPI
+  getNewAPI,
+  getRecommendAPI
 } from '../api'
 import { DiscountGoodsComp, DiscountType } from '../components/DiscountGoodsComp'
 import { MkGoods } from '../components/MkGoods'
 import { Banner, CategoryItem, HotResult, MkGoodsItem, Params } from '../viewmodel'
 import { promptAction } from '@kit.ArkUI'
+import { GoodsItemsDataSource } from '../viewmodel/lazyForeach'
 
 
 @ComponentV2
@@ -28,10 +30,11 @@ export struct HomeView {
   // freshAndGood
   @Local newGoods: MkGoodsItem[] = []
   // recommendedProducts
-  @Local recommendGoods: MkGoodsItem[] = []
+  @Local lazyRecommendGoods: GoodsItemsDataSource<MkGoodsItem> = new GoodsItemsDataSource()
+
   breakPoint: string = AppStorage.get(BreakPointConstants.CURRENT_BP) as string
   safeTop: number = AppStorage.get(SafeAreaConstants.TOP) as number
-
+  page:number = 1
   async getData() {
     //waitForAllPromisesToResolve
     const resData = await Promise.allSettled([
@@ -40,7 +43,8 @@ export struct HomeView {
       getHotPreferenceAPI(),
       getHotInVogueAPI(),
       getHotOneStopAPI(),
-      getNewAPI()
+      getNewAPI(),
+      getRecommendAPI()
     ])
     //Throwing an exception prevents a crash caused by the inability to obtain data
     try {
@@ -54,14 +58,25 @@ export struct HomeView {
           if(index===3) this.hotGoods = (item.value.data.result as HotResult).subTypes[0].goodsItems.items
           if(index===4) this.oneGoods = (item.value.data.result as HotResult).subTypes[0].goodsItems.items
           if(index===5) this.newGoods = item.value.data.result as MkGoodsItem[]
+          if(index===6) this.lazyRecommendGoods.reloadData(item.value.data.result as MkGoodsItem[])
         }
       })
     } catch (e) {
         promptAction.showToast({message:JSON.stringify(e)})
     }
-
   }
 
+  //bottomingEvent
+  async getMoreData() {
+    this.page++
+    //conditions For Loading More Data
+    if(this.lazyRecommendGoods.totalCount()<30){
+      const res = await getRecommendAPI(this.page * 8)
+      this.lazyRecommendGoods.pushDataArray(res.data.result)
+    } else {
+      promptAction.showToast({message:'没有数据了~'})
+    }
+  }
   aboutToAppear(): void {
     //get the Data Of The Server Response
     this.getData()
@@ -105,7 +120,6 @@ export struct HomeView {
   getSpace(): number | undefined {
     return new BreakPointType({ sm: 14, md: 36, lg: 72 }).getValue(this.breakPoint)
   }
-
   build() {
     Scroll() {
       Column() {
@@ -269,7 +283,7 @@ export struct HomeView {
 
           // recommendedProducts
           WaterFlow() {
-            ForEach(this.recommendGoods, (item: MkGoodsItem) => {
+            LazyForEach(this.lazyRecommendGoods, (item: MkGoodsItem) => {
               FlowItem() {
                 MkGoods({ goods: item })
               }
@@ -284,7 +298,14 @@ export struct HomeView {
           )
           .columnsGap(8)
           .rowsGap(10)
-
+          .height('100%')
+          .nestedScroll({
+            scrollForward: NestedScrollMode.PARENT_FIRST,
+            scrollBackward: NestedScrollMode.SELF_FIRST
+          })
+          .onReachEnd(()=>{
+            this.getMoreData()
+          })
         }
         .padding({
           left: 8,
