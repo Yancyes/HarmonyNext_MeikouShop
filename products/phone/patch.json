@@ -1,0 +1,11 @@
+{
+  "app": {
+    "bundleName": "com.yancy.meikoushop",
+    "patchVersionCode": 2000011,
+    "versionCode": 1000000
+  },
+  "module": {
+    "name": "phone",
+    "type": "hotreload"
+  }
+}
