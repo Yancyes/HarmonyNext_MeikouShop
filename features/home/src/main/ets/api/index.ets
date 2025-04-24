@@ -26,7 +26,8 @@ export const getNewAPI = () => {
 }
 
 /**
- * @param limit the Amount Of Data Requested At Once */
+ * @param limit the Amount Of Data Requested At Once
+ * @default 8 */
 export const getRecommendAPI = (limit: number = 8) => {
   return Https.get<MkGoodsItem[]>('/home/recommend', new Object({ limit }))
 }
