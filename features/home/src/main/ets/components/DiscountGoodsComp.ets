@@ -1,4 +1,4 @@
-import { MkGoodsItem } from "basic"
+import { MkGoodsItem } from 'basic'
 
 export enum DiscountType {
   COMMAND,
@@ -6,10 +6,10 @@ export enum DiscountType {
   NEW
 }
 
-@Component
+@ComponentV2
 export struct DiscountGoodsComp {
-  @Prop type: DiscountType = DiscountType.COMMAND
-  goods: MkGoodsItem = {} as MkGoodsItem
+  @Param type: DiscountType = DiscountType.COMMAND
+  @Param goods: MkGoodsItem = {} as MkGoodsItem
 
   @Builder
   CommandBuilder() {
