@@ -1,23 +1,27 @@
-import { CategoryItem, CategoryItemChild } from "basic"
+import { BreakPointConstants, BreakPointType, CategoryItem, CategoryItemChild, MkNavbar } from 'basic'
 
 @ComponentV2
 export struct CategoryView {
-  //  Mock分类数据
-  categories: CategoryItem[] = new Array(10).fill({
-    id: "1181622001",
-    name: "气质女装",
-    picture: "https://yjy-teach-oss.oss-cn-beijing.aliyuncs.com/meikou/c1/qznz.png"
-  })
+  //  mock Classification Data
+  categories: CategoryItem[] = AppStorage.get('CategoryData') as CategoryItem[]
   @Local activeIndex: number = 0
+  breakpoint: string = AppStorage.get(BreakPointConstants.CURRENT_BP) as string
+  scroller: Scroller = new Scroller()
 
   build() {
     Column() {
-      // MkNavbar()
+      MkNavbar({
+        title: '分类',
+        showLeftIcon: false,
+        showRightIcon: true,
+        rightIcon: $r('[basic].media.ic_public_search'),
+      })
+        .border({ width: { bottom: 0.5 }, color: $r('[basic].color.under') })
 
       Row() {
         Column() {
           ForEach(this.categories, (item: CategoryItem, i) => {
-            Text(item.name)// 文本
+            Text(item.name)// text
               .backgroundColor(this.activeIndex === i ? $r('[basic].color.black') : $r('[basic].color.white'))
               .fontSize(14)
               .fontColor(this.activeIndex === i ? $r('[basic].color.white') : $r('[basic].color.black'))
@@ -25,7 +29,10 @@ export struct CategoryView {
               .width('100%')
               .height(56)
               .onClick(() => {
+                //synchronize Indexes
                 this.activeIndex = i
+                //when Switching Menus ScrollTo The Top
+                this.scroller.scrollTo({ yOffset: 0, xOffset: 0, animation: true })
               })
 
           })
@@ -33,26 +40,28 @@ export struct CategoryView {
         .width(88)
         .border({ width: { right: 0.5 }, color: $r('[basic].color.under') })
 
-        Scroll() {
+        Scroll(this.scroller) {
           Column() {
-            // 顶部图片
-            Image('https://yjy-teach-oss.oss-cn-beijing.aliyuncs.com/meikou/c1/qznz.png')
+            // top Image
+            Image(this.categories[this.activeIndex]?.picture)
               .width('100%')
-              .height(136)
+              .height(new BreakPointType({ sm: 136, md: 200, lg: 220 })
+                .getValue(this.breakpoint))
               .objectFit(ImageFit.Contain)
               .backgroundColor('#f6f6f6')
               .borderRadius(8)
               .margin({ bottom: 8 })
-            GridRow({ columns: 2, gutter: 8 }) {
-              // 子分类
-              ForEach(Array.from({ length: 10 }), (sub: CategoryItemChild) => {
+            //setTheNumberOfColumns
+            GridRow({ columns: { sm: 2, md: 3, lg: 4 }, gutter: 8 }) {
+              // sub categories
+              ForEach((this.categories[this.activeIndex]?.children), (sub: CategoryItemChild) => {
                 GridCol() {
                   Column() {
-                    // 图片
-                    Image('https://yjy-teach-oss.oss-cn-beijing.aliyuncs.com/meikou/c2/qznz_bq.png?quality=95&imageView')
+                    // picture
+                    Image(sub.picture)
                       .width(64)
                       .aspectRatio(1)
-                    Text('半裙')// 文本
+                    Text(sub.name)// text
                       .fontSize(14)
                       .fontColor($r('[basic].color.text'))
                       .margin({ top: 8 })
