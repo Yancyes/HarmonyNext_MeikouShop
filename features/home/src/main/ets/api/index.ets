@@ -1,5 +1,4 @@
-import { Https } from 'basic'
-import { Banner, CategoryItem, HotResult, MkGoodsItem } from '../viewmodel'
+import { Banner, CategoryItem, HotResult, Https, MkGoodsItem } from 'basic'
 
 export const getBannerAPI = () => {
   return Https.get<Banner[]>('/home/banner')

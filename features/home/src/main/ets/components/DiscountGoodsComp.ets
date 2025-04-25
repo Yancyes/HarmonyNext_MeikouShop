@@ -1,4 +1,4 @@
-import { MkGoodsItem } from '../viewmodel'
+import { MkGoodsItem } from "basic"
 
 export enum DiscountType {
   COMMAND,

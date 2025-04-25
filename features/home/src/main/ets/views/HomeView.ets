@@ -1,4 +1,9 @@
-import { BreakPointConstants, BreakPointType, MkLoading, SafeAreaConstants } from 'basic'
+import { Banner, BreakPointConstants, BreakPointType, CategoryItem,
+  HotResult,
+  MkGoodsItem,
+  MkLoading,
+  Params,
+  SafeAreaConstants } from 'basic'
 import {
   getBannerAPI,
   getCategoryAPI,
@@ -10,7 +15,6 @@ import {
 } from '../api'
 import { DiscountGoodsComp, DiscountType } from '../components/DiscountGoodsComp'
 import { MkGoods } from '../components/MkGoods'
-import { Banner, CategoryItem, HotResult, MkGoodsItem, Params } from '../viewmodel'
 import { promptAction } from '@kit.ArkUI'
 import { GoodsItemsDataSource } from '../viewmodel/lazyForeach'
 
