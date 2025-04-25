@@ -1,9 +1,14 @@
-import { Banner, BreakPointConstants, BreakPointType, CategoryItem,
+import {
+  Banner,
+  BreakPointConstants,
+  BreakPointType,
+  CategoryItem,
   HotResult,
   MkGoodsItem,
   MkLoading,
   Params,
-  SafeAreaConstants } from 'basic'
+  SafeAreaConstants
+} from 'basic'
 import {
   getBannerAPI,
   getCategoryAPI,
@@ -78,6 +83,7 @@ export struct HomeView {
           //---------------------------------------------------------------
           if(index===5) this.newGoods = MkGoods
           if(index===6) this.lazyRecommendGoods.reloadData(MkGoods)
+          AppStorage.setOrCreate('CategoryData',this.categories)
         }
       })
     } catch (e) {
