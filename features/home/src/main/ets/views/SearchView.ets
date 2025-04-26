@@ -1,5 +1,5 @@
 import { window } from '@kit.ArkUI'
-import { SafeAreaConstants } from 'basic'
+import { SafeAreaConstants, ViewsConstants } from 'basic'
 
 @Builder
 function SearchViewBuilder() {
@@ -56,7 +56,7 @@ export struct SearchView {
           .caretStyle({ color: $r('[basic].color.red') })
           .defaultFocus(true)
           .onSubmit((value) => {
-
+            this.navPath.pushPathByName(ViewsConstants.SEARCH_RESULT_VIEW,value)
           })
       }
       .padding({ top: this.safeTop, right: 16 })

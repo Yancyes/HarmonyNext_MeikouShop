@@ -1,4 +1,4 @@
-import { BreakPointConstants, BreakPointType, CategoryItem, CategoryItemChild, MkNavbar } from 'basic'
+import { BreakPointConstants, BreakPointType, CategoryItem, CategoryItemChild, MkNavbar, ViewsConstants } from 'basic'
 
 @ComponentV2
 export struct CategoryView {
@@ -16,7 +16,7 @@ export struct CategoryView {
         showRightIcon: true,
         rightIcon: $r('[basic].media.ic_public_search'),
         rightClickHandler:()=>{
-          this.navPath.pushPathByName('SearchView',null)
+          this.navPath.pushPathByName(ViewsConstants.SEARCH_VIEW,null)
         }
       })
         .border({ width: { bottom: 0.5 }, color: $r('[basic].color.under') })

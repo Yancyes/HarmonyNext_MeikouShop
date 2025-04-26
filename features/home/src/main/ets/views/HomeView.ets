@@ -7,7 +7,8 @@ import {
   MkGoodsItem,
   MkLoading,
   Params,
-  SafeAreaConstants
+  SafeAreaConstants,
+  ViewsConstants
 } from 'basic'
 import {
   getBannerAPI,
@@ -206,7 +207,7 @@ export struct HomeView {
               }
               .padding({ left: 16, right: 16, top: this.safeTop })
               .onClick(()=>{
-                this.navPath.pushPath({name:'SearchView'})
+                this.navPath.pushPath({name:ViewsConstants.SEARCH_VIEW})
               })
             }
             .width('100%')
