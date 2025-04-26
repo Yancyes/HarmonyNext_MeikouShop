@@ -40,6 +40,7 @@ export struct HomeView {
   @Local newGoods: MkGoodsItem[] = []
   // recommendedProducts
   @Local lazyRecommendGoods: GoodsItemsDataSource<MkGoodsItem> = new GoodsItemsDataSource()
+  @Consumer() navPath: NavPathStack = new NavPathStack()
 
   breakPoint: string = AppStorage.get(BreakPointConstants.CURRENT_BP) as string
   safeTop: number = AppStorage.get(SafeAreaConstants.TOP) as number
@@ -204,6 +205,9 @@ export struct HomeView {
                 .padding({ left: 12 })
               }
               .padding({ left: 16, right: 16, top: this.safeTop })
+              .onClick(()=>{
+                this.navPath.pushPath({name:'SearchView'})
+              })
             }
             .width('100%')
 

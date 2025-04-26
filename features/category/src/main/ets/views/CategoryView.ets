@@ -7,7 +7,7 @@ export struct CategoryView {
   @Local activeIndex: number = 0
   breakpoint: string = AppStorage.get(BreakPointConstants.CURRENT_BP) as string
   scroller: Scroller = new Scroller()
-
+  @Consumer() navPath: NavPathStack = new NavPathStack()
   build() {
     Column() {
       MkNavbar({
@@ -15,6 +15,9 @@ export struct CategoryView {
         showLeftIcon: false,
         showRightIcon: true,
         rightIcon: $r('[basic].media.ic_public_search'),
+        rightClickHandler:()=>{
+          this.navPath.pushPathByName('SearchView',null)
+        }
       })
         .border({ width: { bottom: 0.5 }, color: $r('[basic].color.under') })
 
