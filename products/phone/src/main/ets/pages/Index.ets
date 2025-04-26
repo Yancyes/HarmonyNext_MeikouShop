@@ -21,7 +21,7 @@ struct Index {
     { text: '购物袋', normal: $r('app.media.ic_public_cart_normal'), active: $r('app.media.ic_public_cart_active') },
     { text: '我的', normal: $r('app.media.ic_public_my_normal'), active: $r('app.media.ic_public_my_active') },
   ]
-  navPath: NavPathStack = new NavPathStack()
+  @Provider() navPath: NavPathStack = new NavPathStack()
   safeBottom: number = AppStorage.get(SafeAreaConstants.BOTTOM) as number
 
   build() {
