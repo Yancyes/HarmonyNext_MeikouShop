@@ -1,7 +1,8 @@
-import { MkGoodsItem, SafeAreaConstants, ViewsConstants } from 'basic'
-import { searchGoodsAPI } from '../api'
-import { MkGoods } from '../components/MkGoods'
+import { BreakPointConstants, MkGoodsItem, SafeAreaConstants, ViewsConstants } from 'basic'
+import { getRecommendAPI, searchGoodsAPI } from '../api'
+import { MkWaterFlow } from '../components'
 import { SearchParams, SortCompAttr, SortField, SortMethod } from '../viewmodel'
+import { GoodsItemsDataSource } from '../viewmodel/lazyForeach'
 
 
 @Builder
@@ -15,7 +16,7 @@ function SearchResultViewBuilder() {
 @ComponentV2
 export struct SearchResultView {
   safeTop: number = AppStorage.get(SafeAreaConstants.TOP) as number
-  @Local data: MkGoodsItem[] = []
+  @Local dataLazy: GoodsItemsDataSource<MkGoodsItem> = new GoodsItemsDataSource()
   // queryParameters
   @Local
   params: SearchParams =
@@ -37,30 +38,21 @@ export struct SearchResultView {
 
   async queryData() {
     const res = await searchGoodsAPI(this.params)
-    this.data = res.data.result.pageData.items
+    this.dataLazy.reloadData(res.data.result.pageData.items)
   }
 
-  aboutToAppear() {
+  async aboutToAppear() {
+    //get Default data
+    const res = await getRecommendAPI()
+    this.dataLazy.reloadData(res.data.result)
     // TODO parsingParameters
     this.params.keyword = this.navPath.getParamByName(ViewsConstants.SEARCH_RESULT_VIEW)[0] as string
     // TODO queryTheData
-    this.queryData()
+    if(this.params.keyword){
+      this.queryData()
+    }
   }
 
-  @Builder
-  getWaterFlowView() {
-    WaterFlow({ scroller: this.scroller }) {
-      ForEach(this.data, (item: MkGoodsItem) => {
-        FlowItem() {
-          MkGoods({ goods: item, smallImage: true })
-        }
-      })
-    }
-    .columnsTemplate("1fr 1fr")
-    .columnsGap(0.5)
-    .rowsGap(0.5)
-    .layoutWeight(1) // 占满主轴剩余空间
-  }
 
   @Monitor('params')
   paramsChange() {
@@ -126,8 +118,14 @@ export struct SearchResultView {
       .width('100%')
       .justifyContent(FlexAlign.SpaceBetween)
       .border({ width: { bottom: 0.5 }, color: $r('[basic].color.border') })
-
-      this.getWaterFlowView()
+      // Goods Area
+      Scroll(){
+        MkWaterFlow({
+          breakPoint: AppStorage.get(BreakPointConstants.CURRENT_BP) as string,
+          page: this.params.page,
+          lazyRecommendGoods: this.dataLazy
+        })
+      }.scrollBar(BarState.Off).layoutWeight(1)
     }
   }
 }
