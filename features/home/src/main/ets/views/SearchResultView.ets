@@ -41,15 +41,12 @@ export struct SearchResultView {
   @Local isRefreshing: boolean = false
 
   async queryData() {
+    this.dataLazy.reloadData([])
+    this.params.page = 1
     const res = await searchGoodsAPI(this.params)
     //save
     this.totalPage = res.data.result.pageData.pages
     this.dataLazy.reloadData(res.data.result.pageData.items)
-    if (res) {
-      return true
-    } else {
-      return false
-    }
   }
 
   async loadMore() {
