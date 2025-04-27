@@ -3,6 +3,7 @@ import { getRecommendAPI } from '../api'
 import { GoodsItemsDataSource } from '../viewmodel/lazyForeach'
 import { MkGoods } from './MkGoods'
 import { promptAction } from '@kit.ArkUI'
+import { MkLoadingText } from '.'
 
 @ComponentV2
 export struct MkWaterFlow {
@@ -11,6 +12,7 @@ export struct MkWaterFlow {
   @Require
   @Param @Once lazyRecommendGoods: GoodsItemsDataSource<MkGoodsItem> = new GoodsItemsDataSource()
   @Require @Param @Once page: number = 1
+  @Local isFooterLoading: boolean = false
 
   async getMoreData() {
     this.page++
@@ -18,35 +20,43 @@ export struct MkWaterFlow {
     if (this.lazyRecommendGoods.totalCount() < 30) {
       const res = await getRecommendAPI(this.page * 8)
       this.lazyRecommendGoods.pushDataArray(res.data.result)
+      this.isFooterLoading = true
     } else {
       promptAction.showToast({ message: '没有数据了~' })
+      this.isFooterLoading = false
     }
   }
 
   build() {
-    WaterFlow() {
-      LazyForEach(this.lazyRecommendGoods, (item: MkGoodsItem) => {
-        FlowItem() {
-          MkGoods({ goods: item })
-        }
+    Column({space:5}) {
+      WaterFlow() {
+        LazyForEach(this.lazyRecommendGoods, (item: MkGoodsItem) => {
+          FlowItem() {
+            MkGoods({ goods: item })
+          }
+        })
+      }
+      .columnsTemplate(
+        new BreakPointType({
+          sm: '1fr 1fr',
+          md: '1fr 1fr 1fr',
+          lg: '1fr 1fr 1fr 1fr'
+        }).getValue(this.breakPoint)
+      )
+      .columnsGap(8)
+      .rowsGap(10)
+      .height('100%')
+      .nestedScroll({
+        scrollForward: NestedScrollMode.PARENT_FIRST,
+        scrollBackward: NestedScrollMode.SELF_FIRST
       })
+      .onReachEnd(() => {
+        this.getMoreData()
+      })
+      //load footer
+      if (this.isFooterLoading) {
+        MkLoadingText()
+      }
     }
-    .columnsTemplate(
-      new BreakPointType({
-        sm: '1fr 1fr',
-        md: '1fr 1fr 1fr',
-        lg: '1fr 1fr 1fr 1fr'
-      }).getValue(this.breakPoint)
-    )
-    .columnsGap(8)
-    .rowsGap(10)
-    .height('100%')
-    .nestedScroll({
-      scrollForward: NestedScrollMode.PARENT_FIRST,
-      scrollBackward: NestedScrollMode.SELF_FIRST
-    })
-    .onReachEnd(() => {
-      this.getMoreData()
-    })
   }
 }
