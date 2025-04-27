@@ -1,8 +1,9 @@
 import { BreakPointConstants, MkGoodsItem, SafeAreaConstants, ViewsConstants } from 'basic'
 import { getRecommendAPI, searchGoodsAPI } from '../api'
-import { MkWaterFlow } from '../components'
+import { MkLoadingText, MkWaterFlow } from '../components'
 import { SearchParams, SortCompAttr, SortField, SortMethod } from '../viewmodel'
 import { GoodsItemsDataSource } from '../viewmodel/lazyForeach'
+import { promptAction } from '@kit.ArkUI'
 
 
 @Builder
@@ -35,30 +36,55 @@ export struct SearchResultView {
   ]
   scroller = new Scroller()
   @Consumer() navPath: NavPathStack = new NavPathStack()
+  //used For Pagination Judgment
+  totalPage: number = 0
+  @Local isRefreshing: boolean = false
 
   async queryData() {
     const res = await searchGoodsAPI(this.params)
+    //save
+    this.totalPage = res.data.result.pageData.pages
     this.dataLazy.reloadData(res.data.result.pageData.items)
-  }
-
-  async aboutToAppear() {
-    //get Default data
-    const res = await getRecommendAPI()
-    this.dataLazy.reloadData(res.data.result)
-    // TODO parsingParameters
-    this.params.keyword = this.navPath.getParamByName(ViewsConstants.SEARCH_RESULT_VIEW)[0] as string
-    // TODO queryTheData
-    if(this.params.keyword){
-      this.queryData()
+    if (res) {
+      return true
+    } else {
+      return false
     }
   }
 
+  async loadMore() {
+    if (this.params.page < this.totalPage) {
+      //pageNumberIncreases
+      this.params.page++
+      const res = await searchGoodsAPI(this.params)
+      this.dataLazy.pushDataArray(res.data.result.pageData.items)
+    } else {
+      promptAction.showToast({ message: '没有数据了~' })
+    }
+  }
+
+  async getRecommendGoodsData() {
+    const res = await getRecommendAPI()
+    this.dataLazy.reloadData(res.data.result)
+  }
+  async aboutToAppear() {
+    //get Default data
+    this.getRecommendGoodsData()
+    // TODO parsingParameters
+    this.params.keyword = this.navPath.getParamByName(ViewsConstants.SEARCH_RESULT_VIEW)[0] as string
+    // TODO queryTheData
+    if (this.params.keyword) {
+      this.queryData()
+    }
+  }
 
   @Monitor('params')
   paramsChange() {
 
   }
-
+  @Builder refreshBuilder(){
+    MkLoadingText()
+  }
   build() {
     Column() {
       // searchArea
@@ -118,12 +144,22 @@ export struct SearchResultView {
       .width('100%')
       .justifyContent(FlexAlign.SpaceBetween)
       .border({ width: { bottom: 0.5 }, color: $r('[basic].color.border') })
+
       // Goods Area
-      Scroll(){
-        MkWaterFlow({
-          breakPoint: AppStorage.get(BreakPointConstants.CURRENT_BP) as string,
-          page: this.params.page,
-          lazyRecommendGoods: this.dataLazy
+      Scroll() {
+        Refresh({ refreshing: $$this.isRefreshing,builder:this.refreshBuilder() }) {
+          MkWaterFlow({
+            breakPoint: AppStorage.get(BreakPointConstants.CURRENT_BP) as string,
+            page: this.params.page,
+            lazyRecommendGoods: this.dataLazy
+          })
+        }.onRefreshing(async () => {
+          //resetTheData
+          this.getRecommendGoodsData()
+          //resetThePageNumber
+          this.params.page = 1
+          this.queryData()
+          this.isRefreshing = false
         })
       }.scrollBar(BarState.Off).layoutWeight(1)
     }
