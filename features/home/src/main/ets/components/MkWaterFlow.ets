@@ -18,9 +18,12 @@ export struct MkWaterFlow {
     this.page++
     //conditions For Loading More Data
     if (this.lazyRecommendGoods.totalCount() < 30) {
+      //show loading
+      this.isFooterLoading = true
       const res = await getRecommendAPI(this.page * 8)
       this.lazyRecommendGoods.pushDataArray(res.data.result)
-      this.isFooterLoading = true
+      //hide loading
+      this.isFooterLoading = false
     } else {
       promptAction.showToast({ message: '没有数据了~' })
       this.isFooterLoading = false
@@ -28,7 +31,7 @@ export struct MkWaterFlow {
   }
 
   build() {
-    Column({space:5}) {
+    Column({ space: 5 }) {
       WaterFlow() {
         LazyForEach(this.lazyRecommendGoods, (item: MkGoodsItem) => {
           FlowItem() {
@@ -53,6 +56,7 @@ export struct MkWaterFlow {
       .onReachEnd(() => {
         this.getMoreData()
       })
+
       //load footer
       if (this.isFooterLoading) {
         MkLoadingText()
