@@ -1,9 +1,9 @@
 import { MkGoodsItem } from "basic"
 
-@Component
+@ComponentV2
 export struct MkGoods {
-  goods: MkGoodsItem = {} as MkGoodsItem
-  smallImage: boolean = false
+  @Param goods: MkGoodsItem = {} as MkGoodsItem
+  @Param smallImage: boolean = false
 
   build() {
     Column({ space: 10 }) {
