@@ -1,5 +1,5 @@
 import { AbilityConstant, ConfigurationConstant, UIAbility, Want } from '@kit.AbilityKit';
-import { window } from '@kit.ArkUI';
+import { KeyboardAvoidMode, window } from '@kit.ArkUI';
 import { currentBreakPoint, Logger, SafeAreaConstants } from 'basic';
 import { deviceInfo } from '@kit.BasicServicesKit';
 
@@ -33,7 +33,10 @@ export default class EntryAbility extends UIAbility {
     win.on("windowSizeChange", (windowSize) => {
       currentBreakPoint.updateBreakPoint(windowSize.width)
     })
-    windowStage.loadContent('pages/Index')
+    windowStage.loadContent('pages/Index',()=>{
+      //set keyboard avoid mode compress
+      windowStage.getMainWindowSync().getUIContext().setKeyboardAvoidMode(KeyboardAvoidMode.RESIZE)
+    })
   }
 
   onWindowStageDestroy(): void {
