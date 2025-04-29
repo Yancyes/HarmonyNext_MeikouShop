@@ -15,9 +15,9 @@ export struct MkNavbar {
   @Param @Once bg: ResourceColor = $r('app.color.white')
   @BuilderParam
   customTitle: () => void = this.defaultTitle
-  @Param leftClickHandler: () => void = () => {
+  @Event leftClickHandler: () => void = () => {
   }
-  @Param rightClickHandler: () => void = () => {
+  @Event rightClickHandler: () => void = () => {
   }
 
   @Builder
