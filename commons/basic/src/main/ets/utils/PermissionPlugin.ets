@@ -31,7 +31,7 @@ class PermissionPlugin {
     const atManager = this.getAtManager()
     const res = await atManager.requestPermissionsFromUser(getContext(), permission)
     const isAuth = res.authResults.every(item => item === abilityAccessCtrl.GrantStatus.PERMISSION_GRANTED)
-    return isAuth ? Promise.resolve() : Promise.reject()
+    return isAuth ? Promise.resolve() : this.requestPermissionOnSetting(permission)
   }
 
   //second time
