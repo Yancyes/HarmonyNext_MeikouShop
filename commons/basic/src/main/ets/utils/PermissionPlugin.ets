@@ -1,20 +1,16 @@
 import { abilityAccessCtrl, bundleManager, Permissions } from '@kit.AbilityKit';
 
 class PermissionPlugin {
-  //get Manager
-  private getAtManager() {
-    return abilityAccessCtrl.createAtManager()
-  }
-
   ///check single Permissions
   checkAccessToken(permission: Permissions) {
     try {
       const atManager = this.getAtManager()
-      const bundleInfo = bundleManager.getBundleInfoForSelfSync(bundleManager.BundleFlag.GET_BUNDLE_INFO_WITH_APPLICATION)
+      const bundleInfo =
+        bundleManager.getBundleInfoForSelfSync(bundleManager.BundleFlag.GET_BUNDLE_INFO_WITH_APPLICATION)
       const tokenId = bundleInfo.appInfo.accessTokenId
       const grantStatus = atManager.checkAccessTokenSync(tokenId, permission)
       return grantStatus
-    }catch (e) {
+    } catch (e) {
       return abilityAccessCtrl.GrantStatus.PERMISSION_DENIED
     }
   }
@@ -30,7 +26,6 @@ class PermissionPlugin {
     return true
   }
 
-  //Apply for authorization from the user
   //first time
   async requestPermissions(permission: Permissions[]) {
     const atManager = this.getAtManager()
@@ -45,6 +40,13 @@ class PermissionPlugin {
     const grantStatus = await atManager.requestPermissionOnSetting(getContext(), permission)
     const isAuth = grantStatus.every(item => item === abilityAccessCtrl.GrantStatus.PERMISSION_GRANTED)
     return isAuth ? Promise.resolve() : Promise.reject()
+  }
+
+  //Apply for authorization from the user
+
+  //get Manager
+  private getAtManager() {
+    return abilityAccessCtrl.createAtManager()
   }
 }
 
