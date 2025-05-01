@@ -1,4 +1,4 @@
-import { MkGoodsItem } from "basic"
+import { MkGoodsItem } from '..'
 
 @ComponentV2
 export struct MkGoods {
@@ -22,7 +22,7 @@ export struct MkGoods {
       }
       Text(this.goods.name)
         .fontSize(14)
-        .fontColor($r('[basic].color.text'))
+        .fontColor($r('app.color.text'))
         .maxLines(2)
         .textOverflow({ overflow: TextOverflow.Ellipsis })
         .width('100%')
@@ -31,15 +31,15 @@ export struct MkGoods {
         Text('¥' + Number(this.goods.price))
           .fontSize(14)
           .fontWeight(FontWeight.Bold)
-          .fontColor($r('[basic].color.black'))
+          .fontColor($r('app.color.black'))
         Text('¥999')
           .fontSize(8)
-          .fontColor($r('[basic].color.gray'))
-          .decoration({ type: TextDecorationType.LineThrough, color: $r('[basic].color.gray') })
+          .fontColor($r('app.color.gray'))
+          .decoration({ type: TextDecorationType.LineThrough, color: $r('app.color.gray') })
         Blank()
         Text('2.9万+人付款')
           .fontSize(10)
-          .fontColor($r('[basic].color.gray'))
+          .fontColor($r('app.color.gray'))
       }
       .alignItems(VerticalAlign.Bottom)
       .width('100%')
@@ -47,7 +47,7 @@ export struct MkGoods {
       .padding({ left: 10, right: 10 })
     }
     .width('100%')
-    .backgroundColor($r('[basic].color.white'))
+    .backgroundColor($r('app.color.white'))
     .borderRadius(8)
     .clip(true)
   }
