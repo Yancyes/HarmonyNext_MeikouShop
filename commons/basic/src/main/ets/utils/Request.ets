@@ -53,14 +53,14 @@ export class Https {
   }
 
   static post<T>(url: string, data?: object): Promise<ResponseType<T>> {
-    return instance.get<null, ResponseType<T>>(url, data)
+    return instance.post<null, ResponseType<T>>(url, data)
   }
 
   static delete<T>(url: string, data?: object): Promise<ResponseType<T>> {
-    return instance.get<null, ResponseType<T>>(url, data)
+    return instance.delete<null, ResponseType<T>>(url, data)
   }
 
   static put<T>(url: string, data?: object): Promise<ResponseType<T>> {
-    return instance.get<null, ResponseType<T>>(url, data)
+    return instance.put<null, ResponseType<T>>(url, data)
   }
 }
