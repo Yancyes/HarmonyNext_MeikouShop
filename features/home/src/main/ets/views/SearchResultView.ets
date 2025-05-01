@@ -37,20 +37,17 @@ export struct SearchResultView {
   scroller = new Scroller()
   @Consumer() navPath: NavPathStack = new NavPathStack()
   //used For Pagination Judgment
-  totalPage: number = 0
+  pages: number = 1
   @Local isRefreshing: boolean = false
 
   async queryData() {
-    this.dataLazy.reloadData([])
-    this.params.page = 1
     const res = await searchGoodsAPI(this.params)
-    //save
-    this.totalPage = res.data.result.pageData.pages
     this.dataLazy.reloadData(res.data.result.pageData.items)
+    this.pages = res.data.result.pageData.pages
   }
 
   async loadMore() {
-    if (this.params.page < this.totalPage) {
+    if (this.params.page < this.pages) {
       //pageNumberIncreases
       this.params.page++
       const res = await searchGoodsAPI(this.params)
@@ -64,24 +61,24 @@ export struct SearchResultView {
     const res = await getRecommendAPI()
     this.dataLazy.reloadData(res.data.result)
   }
-  async aboutToAppear() {
+
+  aboutToAppear() {
     //get Default data
     this.getRecommendGoodsData()
     // TODO parsingParameters
     this.params.keyword = this.navPath.getParamByName(ViewsConstants.SEARCH_RESULT_VIEW)[0] as string
-    // TODO queryTheData
-    if (this.params.keyword) {
-      this.queryData()
-    }
+    this.queryData()
   }
 
   @Monitor('params')
   paramsChange() {
-
   }
-  @Builder refreshBuilder(){
+
+  @Builder
+  refreshBuilder() {
     MkLoadingText()
   }
+
   build() {
     Column() {
       // searchArea
@@ -144,7 +141,7 @@ export struct SearchResultView {
 
       // Goods Area
       Scroll() {
-        Refresh({ refreshing: $$this.isRefreshing,builder:this.refreshBuilder() }) {
+        Refresh({ refreshing: $$this.isRefreshing, builder: this.refreshBuilder() }) {
           MkWaterFlow({
             breakPoint: AppStorage.get(BreakPointConstants.CURRENT_BP) as string,
             page: this.params.page,
