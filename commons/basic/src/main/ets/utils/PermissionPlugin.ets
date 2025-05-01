@@ -1,12 +1,11 @@
-import { abilityAccessCtrl, bundleManager, Permissions } from '@kit.AbilityKit';
+import { abilityAccessCtrl, bundleManager, common, Permissions } from '@kit.AbilityKit';
 
 class PermissionPlugin {
   ///check single Permissions
   checkAccessToken(permission: Permissions) {
     try {
       const atManager = this.getAtManager()
-      const bundleInfo =
-        bundleManager.getBundleInfoForSelfSync(bundleManager.BundleFlag.GET_BUNDLE_INFO_WITH_APPLICATION)
+      const bundleInfo = this.getBundleInfo()
       const tokenId = bundleInfo.appInfo.accessTokenId
       const grantStatus = atManager.checkAccessTokenSync(tokenId, permission)
       return grantStatus
@@ -26,6 +25,7 @@ class PermissionPlugin {
     return true
   }
 
+  //Apply for authorization from the user
   //first time
   async requestPermissions(permission: Permissions[]) {
     const atManager = this.getAtManager()
@@ -42,7 +42,24 @@ class PermissionPlugin {
     return isAuth ? Promise.resolve() : Promise.reject()
   }
 
-  //Apply for authorization from the user
+  openPermissionSettingPage() {
+    const ctx = getContext() as common.UIAbilityContext
+    const bundleInfo = this.getBundleInfo()
+    ctx.startAbility({
+      bundleName: 'com.huawei.hmos.settings',
+      abilityName: 'com.huawei.hmos.settings.MainAbility',
+      uri: 'application_info_entry',
+      parameters: {
+        // openTheSettingsPageByPackageName
+        pushParams: bundleInfo.name
+      }
+    })
+  }
+
+  //get BundleInfo
+  private getBundleInfo() {
+    return bundleManager.getBundleInfoForSelfSync(bundleManager.BundleFlag.GET_BUNDLE_INFO_WITH_APPLICATION)
+  }
 
   //get Manager
   private getAtManager() {
