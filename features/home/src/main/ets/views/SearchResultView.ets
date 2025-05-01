@@ -63,8 +63,6 @@ export struct SearchResultView {
   }
 
   aboutToAppear() {
-    //get Default data
-    this.getRecommendGoodsData()
     // TODO parsingParameters
     this.params.keyword = this.navPath.getParamByName(ViewsConstants.SEARCH_RESULT_VIEW)[0] as string
     this.queryData()
@@ -154,6 +152,7 @@ export struct SearchResultView {
           this.params.page = 1
           this.queryData()
           this.isRefreshing = false
+          promptAction.showToast({ message: '刷新成功',alignment:Alignment.Top,offset:{dy:200,dx:0} })
         })
       }.scrollBar(BarState.Off).layoutWeight(1)
     }
