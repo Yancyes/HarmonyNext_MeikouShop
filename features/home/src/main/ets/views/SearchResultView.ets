@@ -168,7 +168,7 @@ struct SortItemComp {
   @Param @Once sortField: SortField = 'publishTime'
   @Param @Once sortMethod: SortMethod = 'desc'
   // TODO Click on the filter criteria to pass back sortField and sortMethod to the parent component (callback function)
-  @Param onCLickItem: (sortField: SortField, sortMethod: SortMethod) => void = () => {
+  @Event onCLickItem: (sortField: SortField, sortMethod: SortMethod) => void = () => {
   }
 
   build() {
