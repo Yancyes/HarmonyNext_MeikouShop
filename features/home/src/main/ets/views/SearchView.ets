@@ -1,5 +1,6 @@
 import { window } from '@kit.ArkUI'
 import { SafeAreaConstants, ViewsConstants } from 'basic'
+import { AudioSearchComp } from '../components/AudioSearchComp'
 
 @Builder
 function SearchViewBuilder() {
@@ -64,7 +65,15 @@ export struct SearchView {
         angle: 135,
         colors: [[$r('[basic].color.linear_begin'), 0], [$r('[basic].color.linear_end'), 1]]
       })
-
+      //audio
+      AudioSearchComp({
+        onChange: (keyword) => {
+          this.keyword = keyword
+        },
+        onComplete:(keyword)=>{
+          this.navPath.pushPathByName(ViewsConstants.SEARCH_RESULT_VIEW,keyword)
+        }
+      })
     }
   }
 }
