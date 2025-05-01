@@ -1,7 +1,6 @@
-import { BreakPointType, MkGoodsItem } from 'basic'
+import { BreakPointType, MkGoods, MkGoodsItem } from 'basic'
 import { getRecommendAPI } from '../api'
 import { GoodsItemsDataSource } from '../viewmodel/lazyForeach'
-import { MkGoods } from './MkGoods'
 import { promptAction } from '@kit.ArkUI'
 import { MkLoadingText } from '.'
 
