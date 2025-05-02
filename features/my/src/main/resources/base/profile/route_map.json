@@ -4,6 +4,11 @@
       "name": "LoginView",
       "pageSourceFile": "src/main/ets/views/LoginView.ets",
       "buildFunction": "LoginViewBuilder"
+    },
+    {
+      "name": "SettingView",
+      "pageSourceFile": "src/main/ets/views/SettingView.ets",
+      "buildFunction": "SettingsViewBuilder"
     }
   ]
 }
