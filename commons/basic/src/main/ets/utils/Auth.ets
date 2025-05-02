@@ -17,20 +17,20 @@ class Auth {
     account: ''
   }
 
-  getUser(){
-    return this.persistence().user
+  init() {
+    return PersistenceV2.connect(Auth, () => new Auth())!
+  }
+
+  getUser() {
+    return this.init().user
   }
 
   saveUser(user: MkUser) {
-    this.persistence().user = user
+    this.init().user = user
   }
 
   removeUser() {
-    PersistenceV2.remove(Auth)
-  }
-
-  private persistence() {
-    return PersistenceV2.connect(Auth, () => new Auth())!
+    this.init().user = {} as MkUser
   }
 }
 
