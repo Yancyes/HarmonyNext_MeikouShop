@@ -1,9 +1,21 @@
-import { MkGuess, SafeAreaConstants, ViewsConstants } from 'basic'
+import { BreakPointConstants, getGuessLikeApi, MkGoodsItem, MkGuess, SafeAreaConstants, ViewsConstants } from 'basic'
+import { MkLoadingText, MkWaterFlow } from 'home'
+import { GoodsItemsDataSource } from 'home/src/main/ets/viewmodel/lazyForeach'
 
 @ComponentV2
 export struct MyView {
   safeTop: number = AppStorage.get(SafeAreaConstants.TOP) as number
   @Consumer() navPath: NavPathStack = new NavPathStack()
+  breakPoint = AppStorage.get(BreakPointConstants.CURRENT_BP) as string
+  @Local lazyData: GoodsItemsDataSource<MkGoodsItem> = new GoodsItemsDataSource()
+  @Local loading: boolean = false
+
+  async aboutToAppear() {
+    this.loading = true
+    const res = await getGuessLikeApi()
+    this.lazyData.reloadData(res.data.result.items)
+    this.loading = false
+  }
 
   build() {
     Column() {
@@ -32,7 +44,7 @@ export struct MyView {
                 .fontColor($r('[basic].color.black'))
                 .fontWeight(500)
                 .onClick(() => {
-                  this.navPath.pushPath({name:ViewsConstants.LOGIN_VIEW})
+                  this.navPath.pushPath({ name: ViewsConstants.LOGIN_VIEW })
                 })
             }
 
@@ -144,15 +156,25 @@ export struct MyView {
           .padding({ left: 8, right: 8 })
 
           //guess
-          MkGuess()
-            .margin({ top: 8, bottom: 8 })
+          Column() {
+            MkGuess().safeAreaPadding({ top: this.safeTop })
+            if (this.loading) {
+              MkLoadingText()
+                .padding({ top: 100 })
+            } else {
+              MkWaterFlow({
+                breakPoint: this.breakPoint,
+                lazyRecommendGoods: this.lazyData,
+                page: undefined
+              }).margin({ top: 8, bottom: 8 })
+            }
+          }
+          .width('100%')
+          .height('100%')
+          .backgroundColor($r('[basic].color.under'))
         }
-      }
-      .scrollBar(BarState.Off)
+      }.scrollBar(BarState.Off)
     }
-    .width('100%')
-    .height('100%')
-    .backgroundColor($r('[basic].color.under'))
   }
 }
 
@@ -174,6 +196,7 @@ struct NavComp {
           .lineHeight(22)
           .margin({ top: 4 })
       }
+
       .padding({ top: 16, bottom: 10 })
     }
   }
