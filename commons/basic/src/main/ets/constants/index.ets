@@ -16,5 +16,6 @@ export class ViewsConstants {
   static readonly CATEGORY_VIEW: string = 'CategoryView'
   static readonly SEARCH_VIEW: string = 'SearchView'
   static readonly SEARCH_RESULT_VIEW: string = 'SearchResultView'
+  static readonly LOGIN_VIEW: string = 'LoginView'
 }
 
