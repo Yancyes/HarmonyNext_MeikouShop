@@ -1,4 +1,4 @@
-import { MkGuess, SafeAreaConstants } from 'basic'
+import { MkGuess, SafeAreaConstants, ViewsConstants } from 'basic'
 
 @ComponentV2
 export struct MyView {
@@ -22,7 +22,7 @@ export struct MyView {
             .height(50)
 
             Row({ space: 16 }) {
-              // 头像
+              // avatar
               Image($r('app.media.ic_user_avatar'))
                 .width(40)
                 .aspectRatio(1)
@@ -32,9 +32,10 @@ export struct MyView {
                 .fontColor($r('[basic].color.black'))
                 .fontWeight(500)
                 .onClick(() => {
+                  this.navPath.pushPath({name:ViewsConstants.LOGIN_VIEW})
                 })
             }
-            // }
+
             .width('100%')
             .height(72)
 
@@ -103,35 +104,35 @@ export struct MyView {
                 GridCol() {
                   NavComp({ icon: $r('app.media.ic_user_order'), text: '全部订单' })
                     .onClick(() => {
-                      // TODO 订单页，无参数
+                      // TODO orderPageNoParameters
                     })
                 }
 
                 GridCol() {
                   NavComp({ icon: $r('app.media.ic_user_obligation'), text: '待付款' })
                     .onClick(() => {
-                      // TODO 订单页，无参数 orderState=1
+                      // TODO orderPageNoParameterOrderState1
                     })
                 }
 
                 GridCol() {
                   NavComp({ icon: $r('app.media.ic_user_unreceived'), text: '待发货' })
                     .onClick(() => {
-                      // TODO 订单页，无参数 orderState=2
+                      // TODO orderPageNoParameterOrderState2
                     })
                 }
 
                 GridCol() {
                   NavComp({ icon: $r('app.media.ic_user_unshipped'), text: '待收货' })
                     .onClick(() => {
-                      // TODO 订单页，无参数 orderState=3
+                      // TODO orderPageNoParameterOrderState3
                     })
                 }
 
                 GridCol() {
                   NavComp({ icon: $r('app.media.ic_user_unevaluated'), text: '待评价' })
                     .onClick(() => {
-                      // TODO 订单页，无参数 orderState=4
+                      // TODO orderPageNoParameterOrderState4
                     })
                 }
               }
