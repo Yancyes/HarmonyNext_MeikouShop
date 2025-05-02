@@ -1,6 +1,6 @@
 import { AbilityConstant, ConfigurationConstant, UIAbility, Want } from '@kit.AbilityKit';
 import { KeyboardAvoidMode, window } from '@kit.ArkUI';
-import { currentBreakPoint, Logger, SafeAreaConstants } from 'basic';
+import { auth, currentBreakPoint, Logger, SafeAreaConstants } from 'basic';
 import { deviceInfo } from '@kit.BasicServicesKit';
 
 export default class EntryAbility extends UIAbility {
@@ -18,7 +18,7 @@ export default class EntryAbility extends UIAbility {
     // Main window is created, set main page for this ability
     Logger.info('Ability onWindowStageCreate')
     const win = windowStage.getMainWindowSync()
-    //on Non 2In1 Devices Immersive Navigation
+    //fullScreenIsNotRequiredInPCMode
     if (deviceInfo.deviceType !== '2in1') {
       win.setWindowLayoutFullScreen(true)
       const top = win.getWindowAvoidArea(window.AvoidAreaType.TYPE_SYSTEM).topRect
@@ -36,6 +36,8 @@ export default class EntryAbility extends UIAbility {
     windowStage.loadContent('pages/Index',()=>{
       //set keyboard avoid mode compress
       windowStage.getMainWindowSync().getUIContext().setKeyboardAvoidMode(KeyboardAvoidMode.RESIZE)
+      //persistentLoginInformation
+      auth.init()
     })
   }
 
