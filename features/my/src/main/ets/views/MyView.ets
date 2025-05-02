@@ -1,4 +1,13 @@
-import { BreakPointConstants, getGuessLikeApi, MkGoodsItem, MkGuess, SafeAreaConstants, ViewsConstants } from 'basic'
+import {
+  auth,
+  BreakPointConstants,
+  getGuessLikeApi,
+  MkGoodsItem,
+  MkGuess,
+  MkUser,
+  SafeAreaConstants,
+  ViewsConstants
+} from 'basic'
 import { MkLoadingText, MkWaterFlow } from 'home'
 import { GoodsItemsDataSource } from 'home/src/main/ets/viewmodel/lazyForeach'
 
@@ -9,8 +18,12 @@ export struct MyView {
   breakPoint = AppStorage.get(BreakPointConstants.CURRENT_BP) as string
   @Local lazyData: GoodsItemsDataSource<MkGoodsItem> = new GoodsItemsDataSource()
   @Local loading: boolean = false
+  @Local user: MkUser = {} as MkUser
+
 
   async aboutToAppear() {
+    this.user = auth.getUser()
+    //loading Goods
     this.loading = true
     const res = await getGuessLikeApi()
     this.lazyData.reloadData(res.data.result.items)
@@ -25,27 +38,37 @@ export struct MyView {
           Column() {
             Row() {
               Blank()
-              Image($r('[basic].media.ic_public_settings'))
-                .width(24)
-                .aspectRatio(1)
-
+              if (this.user.token) {
+                Image($r('[basic].media.ic_public_settings'))
+                  .width(24)
+                  .aspectRatio(1)
+                  .onClick(() => {
+                    this.navPath.pushPath({ name: ViewsConstants.SETTING_VIEW })
+                  })
+              }
             }
             .width('100%')
             .height(50)
 
             Row({ space: 16 }) {
               // avatar
-              Image($r('app.media.ic_user_avatar'))
+              Image(this.user.avatar || $r('app.media.ic_user_avatar'))
                 .width(40)
                 .aspectRatio(1)
                 .borderRadius(20)
-
-              Text('立即登录')
-                .fontColor($r('[basic].color.black'))
-                .fontWeight(500)
-                .onClick(() => {
-                  this.navPath.pushPath({ name: ViewsConstants.LOGIN_VIEW })
-                })
+              //render user Info
+              if (this.user.token) {
+                Text(this.user.nickname || this.user.account)
+                  .fontColor($r('[basic].color.black'))
+                  .fontWeight(500)
+              } else {
+                Text('立即登录')
+                  .fontColor($r('[basic].color.black'))
+                  .fontWeight(500)
+                  .onClick(() => {
+                    this.navPath.pushPath({ name: ViewsConstants.LOGIN_VIEW })
+                  })
+              }
             }
 
             .width('100%')
@@ -174,7 +197,9 @@ export struct MyView {
           .backgroundColor($r('[basic].color.under'))
         }
       }.scrollBar(BarState.Off)
-    }
+    }.onAppear(()=>{
+      this.user = auth.getUser()
+    })
   }
 }
 
