@@ -321,7 +321,7 @@ export struct HomeView {
                 breakPoint: this.breakPoint,
                 lazyRecommendGoods: this.lazyRecommendGoods,
                 page: this.page
-              })
+              }).safeAreaPadding({ top: this.safeTop})
             }
             .padding({
               left: 8,
