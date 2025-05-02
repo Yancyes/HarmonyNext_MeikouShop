@@ -1,5 +1,4 @@
 export * from './DiscountGoodsComp'
-export * from './MkGoods'
 export * from './MkWaterFlow'
 export * from './MkLoadingText'
 export * from './AudioSearchComp'
