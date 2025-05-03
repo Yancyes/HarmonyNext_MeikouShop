@@ -1,5 +1,5 @@
 import { Banner, CategoryItem, HotResult, Https, MkGoodsItem } from 'basic'
-import { SearchParams, SearchResult } from '../viewmodel'
+import { Goods, SearchParams, SearchResult } from '../viewmodel'
 
 export const getBannerAPI = () => {
   return Https.get<Banner[]>('/home/banner')
@@ -35,4 +35,9 @@ export const getRecommendAPI = (limit: number = 8) => {
  * @param data parameters For Submitting Data */
 export const searchGoodsAPI = (data:SearchParams) => {
   return Https.post<SearchResult>('/search/all',data)
+}
+/**
+ * @param id goods ID */
+export const getGoodsApi = (id: string) => {
+  return Https.get<Goods>('/goods', new Object({ id: id }))
 }
