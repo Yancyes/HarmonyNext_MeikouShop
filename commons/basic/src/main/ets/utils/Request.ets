@@ -1,5 +1,5 @@
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from '@ohos/axios';
-import { Logger } from '../../../../Index';
+import { auth, Logger, MkNavPathStack, ViewsConstants } from '../../../../Index';
 import { promptAction } from '@kit.ArkUI';
 
 interface APIErrorType {
@@ -25,23 +25,31 @@ export type ResponseType<T> = AxiosResponse<HttpResponse<T>>
 
 //interceptor of request
 instance.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+  const user = auth.getUser()
+  if(user.token){
+    config.headers.Authorization = `Bearer ${user.token}`
+  }
   return config
 }, (e: AxiosError) => {
   return Promise.reject(e)
 })
 //interceptor of response
 instance.interceptors.response.use((response: AxiosResponse) => {
+
   return response
 }, (e: AxiosError<APIErrorType>) => {
   Logger.error(e)
+  // responseError
   if (e.response?.status === 400) {
-    promptAction.showToast({
-      message: e.response.data.message
-    })
-  } else if (e.response?.status == 401) {
-    promptAction.showToast({
-      message: '登录过期'
-    })
+    // A 400 is usually a parameter error, and the backend has a response error message
+    promptAction.showToast({ message: e.response.data.message })
+  } else if (e.response?.status === 401) {
+    // 401 generallyTheTokenInformationIsIncorrect
+    promptAction.showToast({ message: '登录信息已过期，请重新登录' })
+    // clearUserInformation
+    auth.removeUser()
+    // jumpToTheLandingPage
+    MkNavPathStack.pushPath({ name: ViewsConstants.LOGIN_VIEW })
   }
   return Promise.reject(e)
 })
