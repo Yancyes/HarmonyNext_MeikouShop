@@ -9,6 +9,11 @@
       "name": "SearchResultView",
       "pageSourceFile": "src/main/ets/views/SearchResultView.ets",
       "buildFunction": "SearchResultViewBuilder"
+    },
+    {
+      "name": "GoodsView",
+      "pageSourceFile": "src/main/ets/views/GoodsView.ets",
+      "buildFunction": "GoodsViewBuilder"
     }
   ]
 }
