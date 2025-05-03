@@ -1,4 +1,5 @@
-import { GoodsItems } from 'basic'
+import { HmSku, HmSpec } from '@ohmos/sku'
+import { GoodsItems, MkGoodsItem } from 'basic'
 
 // parameters Submitted To TheServer
 export interface SearchParams {
@@ -20,10 +21,11 @@ export interface Brand {
   nameEn: string;
   place: null;
   type: null;
-  id:string
-  name:string
-  picture:string
+  id: string
+  name: string
+  picture: string
 }
+
 export interface SearchResult {
   // conditions: Conditions;
   pageData: GoodsItems;
@@ -38,6 +40,24 @@ export interface SortCompAttr {
 
 export interface RouterParam {
   keyword: string
+}
+
+export interface GoodsProperty {
+  name: string;
+  value: string;
+}
+
+export interface GoodsDetail {
+  pictures: string[];
+  properties: GoodsProperty[];
+}
+
+export interface Goods extends MkGoodsItem {
+  inventory: number
+  mainPictures: string[]
+  details: GoodsDetail
+  specs: HmSpec[]
+  skus: HmSku[]
 }
 
 export type SortField = 'publishTime' | 'orderNum' | 'price'
