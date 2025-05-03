@@ -1,4 +1,4 @@
-import { MkGoodsItem } from '..'
+import { MkGoodsItem, MkNavPathStack, ViewsConstants } from '..'
 
 @ComponentV2
 export struct MkGoods {
@@ -50,5 +50,8 @@ export struct MkGoods {
     .backgroundColor($r('app.color.white'))
     .borderRadius(8)
     .clip(true)
+    .onClick(()=>{
+      MkNavPathStack.pushPathByName(ViewsConstants.GOODS_VIEW,this.goods)
+    })
   }
 }
