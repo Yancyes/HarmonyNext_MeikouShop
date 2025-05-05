@@ -1,3 +1,5 @@
+import { emitter } from '@kit.BasicServicesKit'
+
 export class BreakPointConstants {
   static readonly XS: string = 'xs' //watch
   static readonly SM: string = 'sm' //phone
@@ -21,3 +23,7 @@ export class ViewsConstants {
   static readonly GOODS_VIEW: string = 'GoodsView'
 }
 
+export class EmitterKey {
+  // switchToTheSpecifiedTab
+  static CHANGE_TAB: emitter.InnerEvent = { eventId: 10001 }
+}
