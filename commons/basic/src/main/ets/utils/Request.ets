@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from '@ohos/axios';
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from '@ohos/axios';
 import { auth, Logger, MkNavPathStack, ViewsConstants } from '../../../../Index';
 import { promptAction } from '@kit.ArkUI';
 
@@ -56,7 +56,7 @@ instance.interceptors.response.use((response: AxiosResponse) => {
 
 
 export class Https {
-  static get<T>(url: string, params?: object): Promise<ResponseType<T>> {
+  static get<T>(url: string, params?: AxiosRequestConfig): Promise<ResponseType<T>> {
     return instance.get<null, ResponseType<T>>(url, params)
   }
 
