@@ -4,21 +4,18 @@ import { MkGoodsItem, MkNavPathStack, ViewsConstants } from '..'
 export struct MkGoods {
   @Param goods: MkGoodsItem = {} as MkGoodsItem
   @Param smallImage: boolean = false
+  @Param index: number = 0
 
   build() {
     Column({ space: 10 }) {
       if (this.smallImage) {
         Row() {
-          Image(this.goods.picture)
-            .width('100%')
-            .aspectRatio(1)
+          img({ src: this.goods.picture, index: this.index })
         }
         .width('100%')
         .padding(20)
       } else {
-        Image(this.goods.picture)
-          .width('100%')
-          .aspectRatio(1)
+        img({ src: this.goods.picture, index: this.index })
       }
       Text(this.goods.name)
         .fontSize(14)
@@ -50,8 +47,20 @@ export struct MkGoods {
     .backgroundColor($r('app.color.white'))
     .borderRadius(8)
     .clip(true)
-    .onClick(()=>{
-      MkNavPathStack.pushPathByName(ViewsConstants.GOODS_VIEW,this.goods)
+    .onClick(() => {
+      MkNavPathStack.pushPathByName(ViewsConstants.GOODS_VIEW, this.goods)
     })
+  }
+}
+
+@ComponentV2
+struct img {
+  @Require @Param src: ResourceStr = ''
+  @Require @Param index: number = 0
+
+  build() {
+    Image(this.src)
+      .width('100%')
+      .height(this.index % 2 ? 220 : 180)
   }
 }

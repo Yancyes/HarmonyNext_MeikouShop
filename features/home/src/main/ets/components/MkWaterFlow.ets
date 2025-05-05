@@ -32,9 +32,9 @@ export struct MkWaterFlow {
   build() {
     Column({ space: 5 }) {
       WaterFlow() {
-        LazyForEach(this.lazyRecommendGoods, (item: MkGoodsItem) => {
+        LazyForEach(this.lazyRecommendGoods, (item: MkGoodsItem, index) => {
           FlowItem() {
-            MkGoods({ goods: item })
+            MkGoods({ goods: item, index })
           }
         })
       }
