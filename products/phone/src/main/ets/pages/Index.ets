@@ -1,8 +1,9 @@
-import { BreakPointConstants, MkNavPathStack, SafeAreaConstants } from 'basic'
+import { BreakPointConstants, EmitterKey, MkNavPathStack, SafeAreaConstants } from 'basic'
 import { CartView } from 'cart'
 import { CategoryView } from 'category'
 import { HomeView } from 'home'
 import { MyView } from 'my'
+import { emitter } from '@kit.BasicServicesKit'
 
 interface TabItem {
   text: string
@@ -24,9 +25,19 @@ struct Index {
   @Provider() navPath: NavPathStack = MkNavPathStack
   safeBottom: number = AppStorage.get(SafeAreaConstants.BOTTOM) as number
 
+  aboutToAppear(): void {
+    this.registerEvent()
+  }
+
+  registerEvent() {
+    emitter.on(EmitterKey.CHANGE_TAB, (eventData) => {
+      this.activeIndex = eventData.data?.index || 0 //You can return to the top page without passing a value
+    })
+  }
+
   build() {
     Navigation(this.navPath) {
-      Tabs({ barPosition: BarPosition.End }) {
+      Tabs({ barPosition: BarPosition.End,index:$$this.activeIndex }) {
         ForEach(this.list, (item: TabItem, index: number) => {
           TabContent() {
             if (index === 0) {
