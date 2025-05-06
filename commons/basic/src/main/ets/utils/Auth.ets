@@ -1,4 +1,5 @@
 import { PersistenceV2 } from '@kit.ArkUI'
+import { cart } from '..'
 
 export interface MkUser {
   token: string
@@ -27,10 +28,14 @@ class Auth {
 
   saveUser(user: MkUser) {
     this.init().user = user
+    //updateTheCartQuantityWhenYouLogIn
+    cart.getCount()
   }
 
   removeUser() {
     this.init().user = {} as MkUser
+    //updateTheNumberOfCartsWhenYouLogOut
+    cart.getCount()
   }
 }
 
