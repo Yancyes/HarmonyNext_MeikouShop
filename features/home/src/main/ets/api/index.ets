@@ -31,13 +31,15 @@ export const getNewAPI = () => {
 export const getRecommendAPI = (limit: number = 8) => {
   return Https.get<MkGoodsItem[]>('/home/recommend', new Object({ limit }))
 }
+
 /**
  * @param data parameters For Submitting Data */
-export const searchGoodsAPI = (data:SearchParams) => {
-  return Https.post<SearchResult>('/search/all',data)
+export const searchGoodsAPI = (data: SearchParams) => {
+  return Https.post<SearchResult>('/search/all', data)
 }
+
 /**
  * @param id goods ID */
 export const getGoodsApi = (id: string) => {
-  return Https.get<Goods>('/goods', new Object({ id: id }))
+  return Https.get<Goods>('/goods', { params: { id } })
 }
