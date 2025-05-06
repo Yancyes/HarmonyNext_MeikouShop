@@ -1,4 +1,4 @@
-import { BreakPointType, MkGoods, MkGoodsItem } from 'basic'
+import { BreakPointConstants, BreakPointType, getGuessLikeApi, MkGoods, MkGoodsItem, MkGuess } from 'basic'
 import { getRecommendAPI } from '../api'
 import { GoodsItemsDataSource } from '../viewmodel/lazyForeach'
 import { promptAction } from '@kit.ArkUI'
@@ -60,6 +60,26 @@ export struct MkWaterFlow {
       if (this.isFooterLoading) {
         MkLoadingText()
       }
+    }
+  }
+}
+
+@ComponentV2
+export struct MkGuessComp {
+  @Local likeGoods: GoodsItemsDataSource<MkGoodsItem> = new GoodsItemsDataSource()
+  @Param page:number = 1
+  async aboutToAppear(){
+    const res = await getGuessLikeApi()
+    this.likeGoods.reloadData(res.data.result.items)
+  }
+  build() {
+    Column(){
+      MkGuess()
+      MkWaterFlow({
+        lazyRecommendGoods: this.likeGoods,
+        breakPoint: AppStorage.get(BreakPointConstants.CURRENT_BP) as string,
+        page: this.page
+      })
     }
   }
 }
