@@ -1,4 +1,4 @@
-import { BreakPointConstants, EmitterKey, MkNavPathStack, SafeAreaConstants } from 'basic'
+import { auth, BreakPointConstants, cart, EmitterKey, MkNavPathStack, SafeAreaConstants } from 'basic'
 import { CartView } from 'cart'
 import { CategoryView } from 'category'
 import { HomeView } from 'home'
@@ -24,9 +24,11 @@ struct Index {
   ]
   @Provider() navPath: NavPathStack = MkNavPathStack
   safeBottom: number = AppStorage.get(SafeAreaConstants.BOTTOM) as number
+  @Local cartCount: number = cart.init().count
 
   aboutToAppear(): void {
     this.registerEvent()
+    cart.getCount()
   }
 
   registerEvent() {
@@ -37,7 +39,7 @@ struct Index {
 
   build() {
     Navigation(this.navPath) {
-      Tabs({ barPosition: BarPosition.End,index:$$this.activeIndex }) {
+      Tabs({ barPosition: BarPosition.End, index: $$this.activeIndex }) {
         ForEach(this.list, (item: TabItem, index: number) => {
           TabContent() {
             if (index === 0) {
@@ -66,15 +68,20 @@ struct Index {
 
   @Builder
   TabItemBuilder(item: TabItem, index: number) {
-    Column() {
-      Image(this.activeIndex === index ? item.active : item.normal)
-        .width(24)
-        .aspectRatio(1)
-      Text(item.text)// To access resources across HSPs, you need to import them in oh-package.json5
-        .fontColor($r('[basic].color.black'))
-        .fontSize(12)
+    Badge({
+      count: (index === 2 && auth.getUser().token) ? this.cartCount : 0,
+      style: {},
+    }) {
+      Column() {
+        Image(this.activeIndex === index ? item.active : item.normal)
+          .width(24)
+          .aspectRatio(1)
+        Text(item.text)// To access resources across HSPs, you need to import them in oh-package.json5
+          .fontColor($r('[basic].color.black'))
+          .fontSize(12)
+      }
+      .justifyContent(FlexAlign.SpaceEvenly)
+      .height(50)
     }
-    .justifyContent(FlexAlign.SpaceEvenly)
-    .height(50)
   }
 }
