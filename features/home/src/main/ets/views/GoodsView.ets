@@ -1,18 +1,9 @@
-import { HmSku } from '@ohmos/sku'
-import {
-  BreakPointConstants,
-  getGuessLikeApi,
-  MKDialogLoading,
-  MkGoodsItem,
-  MkGuess,
-  MkNavbar,
-  SafeAreaConstants,
-  ViewsConstants
-} from 'basic'
+import { HmSku, Sku } from '@ohmos/sku'
+import { auth, cart, MKDialogLoading, MkGoodsItem, MkNavbar, SafeAreaConstants, ViewsConstants } from 'basic'
 import { Goods } from '../viewmodel'
-import { window } from '@kit.ArkUI'
+import { promptAction, window } from '@kit.ArkUI'
 import { getGoodsApi } from '../api'
-import { MkWaterFlow } from '../components/MkWaterFlow'
+import { MkGuessComp } from '../components/MkWaterFlow'
 import { GoodsItemsDataSource } from '../viewmodel/lazyForeach'
 
 
@@ -42,7 +33,7 @@ export struct GoodsView {
     customStyle: true
   })
   tabs: string[] = ['商品', '评价', '详情', '推荐']
-
+  @Local cartCount:number = cart.init().count
   setStatusBar() {
     window.getLastWindow(getContext())
       .then((win) => {
@@ -53,9 +44,6 @@ export struct GoodsView {
   async aboutToAppear() {
     //get router Params
     this.goods = this.navPath.getParamByName(ViewsConstants.GOODS_VIEW).pop() as Goods
-    //get likeGoods
-    const res = await getGuessLikeApi()
-    this.likeGoods.reloadData(res.data.result.items)
     //loading detailPage Data
     this.getData()
     this.setStatusBar()
@@ -136,8 +124,8 @@ export struct GoodsView {
             Counter() {
               Text(this.count.toString())
             }
-            .enableInc(this.count < (this.sku.inventory || this.goods.inventory)) // 加：小于库存还能加
-            .enableDec(this.count > 1) // 减：大于 1 还能减
+            .enableInc(this.count < (this.sku.inventory || this.goods.inventory)) // addLessThanTheInventoryCanAlsoBeAdded
+            .enableDec(this.count > 1) // minusMoreThan1CanAlsoBeReduced
             .onInc(() => {
               this.count++
             })
@@ -163,14 +151,14 @@ export struct GoodsView {
 
       List() {
         ListItem() {
-          //Sku 组件
-          //  MKSku({
-          //   specs: this.goods.specs,
-          //   skus: this.goods.skus,
-          //   onSkuChange: (sku: HmSku) => {
-          //     this.sku = sku
-          //   }
-          // })
+          //Sku comp
+          Sku({
+            specs: this.goods.specs,
+            skus: this.goods.skus,
+            onSkuChange: (sku: HmSku) => {
+              this.sku = sku
+            }
+          })
         }
       }
       .layoutWeight(1)
@@ -180,6 +168,7 @@ export struct GoodsView {
         Button(this.loading ? '加入中...' : '加入购物袋')
           .buyButton($r('[basic].color.black'), true)
           .onClick(() => {
+            this.addToCart()
           })
         Button('立即购买')
           .buyButton($r('[basic].color.red'), false)
@@ -195,6 +184,28 @@ export struct GoodsView {
     })
   }
 
+  async addToCart() {
+    const token = auth.getUser().token
+    if(!token){
+      promptAction.showToast({message:'请登录后下单'})
+      this.navPath.pushPath({name:ViewsConstants.LOGIN_VIEW})
+      return
+    }
+    //Determine whether the user has a product selection rule
+    if(!this.sku.id){
+      promptAction.showToast({message:'请选择要购买的商品规格'})
+      return
+    }
+    //addToCart
+    this.loading = true
+    await cart.add({skuId:this.sku.id,count:this.count})
+    this.loading = false
+    promptAction.showToast({message:'加入购物袋成功'})
+    //close sheet
+    this.showSheet = false
+    //updateCartCount
+    cart.getCount()
+  }
   build() {
     Column() {
       MkNavbar({
@@ -229,14 +240,7 @@ export struct GoodsView {
 
           ListItem() {
             // youMayAlsoLikeIt
-            Column() {
-              MkGuess()
-              MkWaterFlow({
-                lazyRecommendGoods: this.likeGoods,
-                breakPoint: AppStorage.get(BreakPointConstants.CURRENT_BP) as string,
-                page: undefined
-              })
-            }
+            MkGuessComp()
           }
         }
         .onScrollIndex((index) => {
@@ -255,14 +259,14 @@ export struct GoodsView {
         Image($r('[basic].media.ic_public_comment'))
           .iconButton()
         Badge({
-          count: 10,
+          count: this.cartCount,
           style: {},
           position: { x: 30, y: 4 }
         }) {
           Image($r('[basic].media.ic_public_cart'))
             .iconButton()
             .onClick(() => {
-
+              this.navPath.pushPathByName(ViewsConstants.CART_VIEW,true )
             })
         }
 
