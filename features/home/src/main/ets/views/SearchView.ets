@@ -1,5 +1,5 @@
 import { window } from '@kit.ArkUI'
-import { SafeAreaConstants, ViewsConstants } from 'basic'
+import { fullScreen, ViewsConstants } from 'basic'
 import { AudioSearchComp } from '../components/AudioSearchComp'
 
 @Builder
@@ -12,7 +12,7 @@ function SearchViewBuilder() {
 
 @ComponentV2
 export struct SearchView {
-  safeTop: number = AppStorage.get(SafeAreaConstants.TOP) as number
+  @Local safeTop: number = fullScreen.init().topArea
   @Local keyword: string = ''
   @Consumer() navPath: NavPathStack = new NavPathStack()
 

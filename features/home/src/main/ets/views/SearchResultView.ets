@@ -1,4 +1,4 @@
-import { BreakPointConstants, MkGoodsItem, SafeAreaConstants, ViewsConstants } from 'basic'
+import { currentBreakPoint, fullScreen, MkGoodsItem, ViewsConstants } from 'basic'
 import { getRecommendAPI, searchGoodsAPI } from '../api'
 import { MkLoadingText, MkWaterFlow } from '../components'
 import { SearchParams, SortCompAttr, SortField, SortMethod } from '../viewmodel'
@@ -16,7 +16,7 @@ function SearchResultViewBuilder() {
 
 @ComponentV2
 export struct SearchResultView {
-  safeTop: number = AppStorage.get(SafeAreaConstants.TOP) as number
+  @Local safeTop: number = fullScreen.init().topArea
   @Local dataLazy: GoodsItemsDataSource<MkGoodsItem> = new GoodsItemsDataSource()
   // queryParameters
   @Local
@@ -141,7 +141,7 @@ export struct SearchResultView {
       Scroll() {
         Refresh({ refreshing: $$this.isRefreshing, builder: this.refreshBuilder() }) {
           MkWaterFlow({
-            breakPoint: AppStorage.get(BreakPointConstants.CURRENT_BP) as string,
+            breakPoint: currentBreakPoint.init().curBp,
             page: this.params.page,
             lazyRecommendGoods: this.dataLazy
           })
