@@ -3,11 +3,14 @@ import {
   BreakPointConstants,
   BreakPointType,
   CategoryItem,
+  currentBreakPoint,
+  CurrentBreakPoint,
+  FullScreen,
+  fullScreen,
   HotResult,
   MkGoodsItem,
   MkLoading,
   Params,
-  SafeAreaConstants,
   ViewsConstants
 } from 'basic'
 import {
@@ -42,21 +45,23 @@ export struct HomeView {
   // recommendedProducts
   @Local lazyRecommendGoods: GoodsItemsDataSource<MkGoodsItem> = new GoodsItemsDataSource()
   @Consumer() navPath: NavPathStack = new NavPathStack()
-
-  breakPoint: string = AppStorage.get(BreakPointConstants.CURRENT_BP) as string
-  safeTop: number = AppStorage.get(SafeAreaConstants.TOP) as number
-  page:number = 1
+  @Local breakPoint: CurrentBreakPoint = currentBreakPoint.init()
+  @Local safeTop: FullScreen = fullScreen.init()
+  page: number = 1
   // loading Effect state
   @Local isLoading: boolean = false
   @Local refresh: boolean = false
-  @Builder refreshBuilder() {
-    Row(){
+
+  @Builder
+  refreshBuilder() {
+    Row() {
       MkLoading()
     }
     .width('100%')
     .padding(10)
     .justifyContent(FlexAlign.Center)
   }
+
   async getData() {
     //waitForAllPromisesToResolve
     const resData = await Promise.allSettled([
@@ -99,8 +104,6 @@ export struct HomeView {
     this.refresh = false
     this.page = 1
   }
-  //pullUpLoad
-
 
   async aboutToAppear() {
     //Displays loading animations before getting the data
@@ -146,13 +149,14 @@ export struct HomeView {
   }
 
   getSpace(): number | undefined {
-    return new BreakPointType({ sm: 14, md: 36, lg: 72 }).getValue(this.breakPoint)
+    return new BreakPointType({ sm: 14, md: 36, lg: 72 }).getValue(this.breakPoint.curBp)
   }
+
   build() {
-    if(this.isLoading){
+    if (this.isLoading) {
       MkLoading()
-    }else {
-      Refresh({ refreshing:$$this.refresh,builder:this.refreshBuilder() }){
+    } else {
+      Refresh({ refreshing: $$this.refresh, builder: this.refreshBuilder() }) {
         Scroll() {
           Column() {
             // carousel and Search
@@ -163,7 +167,7 @@ export struct HomeView {
                 })
               }
               .indicator(
-                this.breakPoint === BreakPointConstants.SM ? DotIndicator.dot()
+                this.breakPoint.curBp === BreakPointConstants.SM ? DotIndicator.dot()
                   .itemWidth(8)
                   .itemHeight(4)
                   .color('#33191919')
@@ -173,11 +177,11 @@ export struct HomeView {
               )
               .displayCount(
                 new BreakPointType({ sm: 1, md: 2, lg: 3 })
-                  .getValue(this.breakPoint)
+                  .getValue(this.breakPoint.curBp)
               )
               .itemSpace(
                 new BreakPointType({ sm: 0, md: 10, lg: 20 })
-                  .getValue(this.breakPoint)
+                  .getValue(this.breakPoint.curBp)
               )
 
               Row() {
@@ -196,9 +200,9 @@ export struct HomeView {
                 .borderRadius(20)
                 .padding({ left: 12 })
               }
-              .padding({ left: 16, right: 16, top: this.safeTop })
-              .onClick(()=>{
-                this.navPath.pushPath({name:ViewsConstants.SEARCH_VIEW})
+              .padding({ left: 16, right: 16, top: this.safeTop.topArea })
+              .onClick(() => {
+                this.navPath.pushPath({ name: ViewsConstants.SEARCH_VIEW })
               })
             }
             .width('100%')
@@ -318,10 +322,10 @@ export struct HomeView {
 
               // recommendedProducts
               MkWaterFlow({
-                breakPoint: this.breakPoint,
+                breakPoint: this.breakPoint.curBp,
                 lazyRecommendGoods: this.lazyRecommendGoods,
                 page: this.page
-              }).safeAreaPadding({ top: this.safeTop})
+              }).safeAreaPadding({ top: this.safeTop.topArea })
             }
             .padding({
               left: 8,
@@ -333,10 +337,10 @@ export struct HomeView {
         }
         .backgroundColor(Color.White)
         .scrollBar(BarState.Off)
-        .transition(TransitionEffect.OPACITY.animation({duration:200}))
+        .transition(TransitionEffect.OPACITY.animation({ duration: 200 }))
       }
-      .transition(TransitionEffect.OPACITY.animation({duration:400}))
-      .onRefreshing(()=>{
+      .transition(TransitionEffect.OPACITY.animation({ duration: 400 }))
+      .onRefreshing(() => {
         this.refreshData()
       })
     }

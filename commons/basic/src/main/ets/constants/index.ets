@@ -5,12 +5,6 @@ export class BreakPointConstants {
   static readonly SM: string = 'sm' //phone
   static readonly MD: string = 'md' //folding
   static readonly LG: string = 'lg' //tablet
-  static readonly CURRENT_BP: string = 'current_breakpoint'
-}
-
-export class SafeAreaConstants {
-  static readonly TOP: string = 'top'
-  static readonly BOTTOM: string = 'bottom'
 }
 
 export class ViewsConstants {
@@ -22,6 +16,7 @@ export class ViewsConstants {
   static readonly SETTING_VIEW: string = 'SettingView'
   static readonly GOODS_VIEW: string = 'GoodsView'
   static readonly CART_VIEW: string = 'CartView'
+  static readonly CHECK_VIEW: string = 'CheckView'
 }
 
 export class EmitterKey {
