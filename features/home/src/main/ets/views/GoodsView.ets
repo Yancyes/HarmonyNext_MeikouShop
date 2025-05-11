@@ -1,11 +1,10 @@
 import { HmSku, Sku } from '@ohmos/sku'
-import { auth, cart, MKDialogLoading, MkGoodsItem, MkNavbar, SafeAreaConstants, ViewsConstants } from 'basic'
+import { auth, Cart, cart, fullScreen, MkDialogLoading, MkGoodsItem, MkNavbar, ViewsConstants } from 'basic'
 import { Goods } from '../viewmodel'
 import { promptAction, window } from '@kit.ArkUI'
 import { getGoodsApi } from '../api'
 import { MkGuessComp } from '../components/MkWaterFlow'
 import { GoodsItemsDataSource } from '../viewmodel/lazyForeach'
-
 
 @Builder
 function GoodsViewBuilder() {
@@ -15,10 +14,9 @@ function GoodsViewBuilder() {
   .hideTitleBar(true)
 }
 
-
 @ComponentV2
 export struct GoodsView {
-  safeBottom: number = AppStorage.get(SafeAreaConstants.BOTTOM) as number
+  @Local safeBottom: number = fullScreen.init().bottomArea
   @Local goods: Goods = {} as Goods
   @Local activeIndex: number = 0
   @Local showSheet: boolean = false
@@ -29,11 +27,11 @@ export struct GoodsView {
   scroller = new Scroller()
   @Consumer() navPath: NavPathStack = new NavPathStack()
   dialog = new CustomDialogController({
-    builder: MKDialogLoading({ message: '拼命加载中', }),
+    builder: MkDialogLoading({ message: '拼命加载中', }),
     customStyle: true
   })
   tabs: string[] = ['商品', '评价', '详情', '推荐']
-  @Local cartCount:number = cart.init().count
+  @Local cart:Cart = cart.init()
   setStatusBar() {
     window.getLastWindow(getContext())
       .then((win) => {
@@ -252,14 +250,14 @@ export struct GoodsView {
       }
       .layoutWeight(1)
       .backgroundColor($r('[basic].color.under'))
-
+      //  bottom icon
       Row() {
         Image($r('[basic].media.ic_public_like'))
           .iconButton()
         Image($r('[basic].media.ic_public_comment'))
           .iconButton()
         Badge({
-          count: this.cartCount,
+          count: this.cart.count,
           style: {},
           position: { x: 30, y: 4 }
         }) {
