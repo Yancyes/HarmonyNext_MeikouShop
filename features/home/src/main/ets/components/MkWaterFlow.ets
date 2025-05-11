@@ -1,4 +1,4 @@
-import { BreakPointConstants, BreakPointType, getGuessLikeApi, MkGoods, MkGoodsItem, MkGuess } from 'basic'
+import { BreakPointType, currentBreakPoint, getGuessLikeApi, MkGoods, MkGoodsItem, MkGuess } from 'basic'
 import { getRecommendAPI } from '../api'
 import { GoodsItemsDataSource } from '../viewmodel/lazyForeach'
 import { promptAction } from '@kit.ArkUI'
@@ -77,7 +77,7 @@ export struct MkGuessComp {
       MkGuess()
       MkWaterFlow({
         lazyRecommendGoods: this.likeGoods,
-        breakPoint: AppStorage.get(BreakPointConstants.CURRENT_BP) as string,
+        breakPoint: currentBreakPoint.init().curBp,
         page: this.page
       })
     }
