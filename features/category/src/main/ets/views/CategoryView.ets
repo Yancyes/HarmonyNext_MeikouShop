@@ -1,11 +1,19 @@
-import { BreakPointConstants, BreakPointType, CategoryItem, CategoryItemChild, MkNavbar, ViewsConstants } from 'basic'
+import {
+  BreakPointType,
+  CategoryItem,
+  CategoryItemChild,
+  CurrentBreakPoint,
+  currentBreakPoint,
+  MkNavbar,
+  ViewsConstants
+} from 'basic'
 
 @ComponentV2
 export struct CategoryView {
   //  mock Classification Data
   categories: CategoryItem[] = AppStorage.get('CategoryData') as CategoryItem[]
   @Local activeIndex: number = 0
-  breakpoint: string = AppStorage.get(BreakPointConstants.CURRENT_BP) as string
+  @Local breakpoint: CurrentBreakPoint = currentBreakPoint.init()
   scroller: Scroller = new Scroller()
   @Consumer() navPath: NavPathStack = new NavPathStack()
   build() {
@@ -49,7 +57,7 @@ export struct CategoryView {
             Image(this.categories[this.activeIndex]?.picture)
               .width('100%')
               .height(new BreakPointType({ sm: 136, md: 200, lg: 220 })
-                .getValue(this.breakpoint))
+                .getValue(this.breakpoint.curBp))
               .objectFit(ImageFit.Contain)
               .backgroundColor('#f6f6f6')
               .borderRadius(8)
