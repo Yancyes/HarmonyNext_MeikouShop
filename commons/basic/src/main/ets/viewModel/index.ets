@@ -72,15 +72,15 @@ export interface CartGoods {
 
 @ObservedV2
 export class CartGoodsModel implements CartGoods {
-  count: number = 0
-  id: string = ''
-  name: string = ''
-  picture: string = ''
-  price: number = 0
-  selected: boolean = false
-  skuId: string = ''
-  stock: number = 0
-  attrsText: string = ''
+  @Trace count: number = 0
+  @Trace id: string = ''
+  @Trace name: string = ''
+  @Trace picture: string = ''
+  @Trace price: number = 0
+  @Trace selected: boolean = false
+  @Trace skuId: string = ''
+  @Trace stock: number = 0
+  @Trace attrsText: string = ''
 
   constructor(model: CartGoods) {
     this.count = model.count
