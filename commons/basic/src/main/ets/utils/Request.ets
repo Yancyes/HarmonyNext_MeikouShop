@@ -26,7 +26,7 @@ export type ResponseType<T> = AxiosResponse<HttpResponse<T>>
 //interceptor of request
 instance.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   const user = auth.getUser()
-  if(user.token){
+  if (user.token) {
     config.headers.Authorization = `Bearer ${user.token}`
   }
   return config
@@ -64,7 +64,7 @@ export class Https {
     return instance.post<null, ResponseType<T>>(url, data)
   }
 
-  static delete<T>(url: string, data?: object): Promise<ResponseType<T>> {
+  static delete<T>(url: string, data?: AxiosRequestConfig): Promise<ResponseType<T>> {
     return instance.delete<null, ResponseType<T>>(url, data)
   }
 
