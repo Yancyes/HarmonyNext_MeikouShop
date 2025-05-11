@@ -10,7 +10,7 @@ function SettingsViewBuilder() {
 
 @ComponentV2
 export struct SettingsView {
-  @Local user: MkUser = {} as MkUser
+  @Local user: MkUser = auth.init().user
   @Consumer() navPath: NavPathStack = new NavPathStack()
   aboutToAppear() {
     this.user = auth.getUser()
@@ -96,7 +96,7 @@ export struct SettingsView {
             })
         }
       }
-    }.onAppear(() => {
+    }.onVisibleAreaChange([0, 1], () => {
       this.user = auth.getUser()
     })
     .width('100%')
