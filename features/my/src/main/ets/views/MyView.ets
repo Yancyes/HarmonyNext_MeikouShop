@@ -1,11 +1,13 @@
 import {
   auth,
-  BreakPointConstants,
+  currentBreakPoint,
+  CurrentBreakPoint,
+  FullScreen,
+  fullScreen,
   getGuessLikeApi,
   MkGoodsItem,
   MkGuess,
   MkUser,
-  SafeAreaConstants,
   ViewsConstants
 } from 'basic'
 import { MkLoadingText, MkWaterFlow } from 'home'
@@ -13,13 +15,12 @@ import { GoodsItemsDataSource } from 'home/src/main/ets/viewmodel/lazyForeach'
 
 @ComponentV2
 export struct MyView {
-  safeTop: number = AppStorage.get(SafeAreaConstants.TOP) as number
+  @Local safeTop: FullScreen = fullScreen.init()
   @Consumer() navPath: NavPathStack = new NavPathStack()
-  breakPoint = AppStorage.get(BreakPointConstants.CURRENT_BP) as string
+  @Local breakPoint : CurrentBreakPoint = currentBreakPoint.init()
   @Local lazyData: GoodsItemsDataSource<MkGoodsItem> = new GoodsItemsDataSource()
   @Local loading: boolean = false
-  @Local user: MkUser = {} as MkUser
-
+  @Local user: MkUser = auth.init().user
 
   async aboutToAppear() {
     this.user = auth.getUser()
@@ -99,7 +100,7 @@ export struct MyView {
             })
 
           }
-          .padding({ left: 16, right: 16, top: this.safeTop })
+          .padding({ left: 16, right: 16, top: this.safeTop.topArea })
           .linearGradient({
             angle: 180,
             colors: [['#FFF1E5', 0], [$r('[basic].color.under'), 1]]
@@ -180,13 +181,13 @@ export struct MyView {
 
           //guess
           Column() {
-            MkGuess().safeAreaPadding({ top: this.safeTop })
+            MkGuess().safeAreaPadding({ top: this.safeTop.topArea })
             if (this.loading) {
               MkLoadingText()
                 .padding({ top: 100 })
             } else {
               MkWaterFlow({
-                breakPoint: this.breakPoint,
+                breakPoint: this.breakPoint.curBp,
                 lazyRecommendGoods: this.lazyData,
                 page: undefined
               }).margin({ top: 8, bottom: 8 })
@@ -197,7 +198,7 @@ export struct MyView {
           .backgroundColor($r('[basic].color.under'))
         }
       }.scrollBar(BarState.Off)
-    }.onAppear(()=>{
+    }.onVisibleAreaChange([0, 1], () => {
       this.user = auth.getUser()
     })
   }
