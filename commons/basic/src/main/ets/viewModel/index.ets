@@ -1,73 +1,65 @@
-export interface MkGoodsItem {
+interface Common {
   id: string
   name: string
+  picture: ResourceStr
+}
+interface title {
+  title: string
+}
+export interface MkGoodsItem extends Common {
   desc: string
   price: string
-  picture: ResourceStr
   orderNum: number
 }
 
-export interface CategoryItem {
+export interface CategoryItem extends Common{
   children?: CategoryItemChild[]
   goods?: MkGoodsItem[]
-  id: string
-  name: string
-  picture: ResourceStr
 }
 
-export interface CategoryItemChild {
-  id: string
-  name: string
-  picture: ResourceStr
+export interface CategoryItemChild extends Common {
   children?: null
   goods?: null
 }
 
-export interface Banner {
-  id: string;
-  imgUrl: string;
-  type: string;
-  hrefUrl: string;
+export interface Banner extends Pick<Common, 'id'> {
+  imgUrl: string
+  type: string
+  hrefUrl: string
 }
 
-
-export interface Params {
-  title: string,
-  subTitle: string,
-  bg: ResourceStr,
+export interface Params extends title {
+  subTitle: string
+  bg: ResourceStr
   list: MkGoodsItem[]
 }
 
-export interface HotResult {
-  id: string;
-  subTypes: SubType[];
-  title: string;
+export interface HotResult extends title {
+  id: string
+  subTypes: SubType[]
 }
 
 export interface SubType {
-  goodsItems: GoodsItems;
-  id: string;
-  title: string;
+  goodsItems: GoodsItems
+  id: string
+  title: string
 }
 
 export interface GoodsItems {
-  counts: number;
-  items: MkGoodsItem[];
-  page: number;
-  pages: number;
-  pageSize: number;
+  counts: number
+  items: MkGoodsItem[]
+  page: number
+  pages: number
+  pageSize: number
 }
 
-export interface CartGoods {
-  count: number;
-  id: string;
-  name: string;
-  picture: string;
-  price: number;
-  selected: boolean;
-  skuId: string;
-  stock: number;
-  attrsText: string;
+export interface CartGoods extends Common {
+  count: number
+  price: number
+  selected: boolean
+  skuId: string
+  stock: number
+  attrsText: string
 }
 
 @ObservedV2
@@ -86,7 +78,7 @@ export class CartGoodsModel implements CartGoods {
     this.count = model.count
     this.id = model.id
     this.name = model.name
-    this.picture = model.picture
+    this.picture = model.picture as string
     this.price = model.price
     this.selected = model.selected
     this.skuId = model.skuId
