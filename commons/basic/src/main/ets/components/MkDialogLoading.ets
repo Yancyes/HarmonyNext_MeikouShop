@@ -1,5 +1,5 @@
 @CustomDialog
-export struct MKDialogLoading {
+export struct MkDialogLoading {
   message: string = '加载中'
   controller: CustomDialogController
 
