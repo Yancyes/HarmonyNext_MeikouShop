@@ -1,9 +1,9 @@
-import { SafeAreaConstants } from '..'
+import { fullScreen } from '..'
 
 @ComponentV2
 export struct MkNavbar {
   // topSecurityArea
-  safeTop: number = AppStorage.get(SafeAreaConstants.TOP) as number
+  @Local safeTop: number = fullScreen.init().topArea
   @Param @Once title: string = ''
   @Param @Once leftIcon: ResourceStr = $r('app.media.ic_public_left')
   @Param @Once rightIcon: ResourceStr = $r('app.media.ic_public_more')
