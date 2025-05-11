@@ -1,5 +1,6 @@
 import { BreakPointConstants } from '../constants/index'
-import { display } from '@kit.ArkUI'
+import { AppStorageV2, display } from '@kit.ArkUI'
+import { Logger } from '..'
 
 
 interface BreakPointTypeOption<T> {
@@ -40,11 +41,14 @@ export class BreakPointType<T> {
     }
   }
 }
-
+@ObservedV2
 export class CurrentBreakPoint {
   //current break point
-  curBp: string = ''
-
+  @Trace curBp: string = ''
+  // init Storage V2
+  init(){
+    return AppStorageV2.connect(CurrentBreakPoint,()=>new CurrentBreakPoint())!
+  }
   updateBreakPoint(windowWidth: number) {
     try {
       //Convert the unit of length from px to vp, (px divided by pixel density to get vp)
@@ -62,11 +66,11 @@ export class CurrentBreakPoint {
       }
       if (this.curBp !== newBp) {
         this.curBp = newBp
-        //add storage space of V1
-        AppStorage.setOrCreate(BreakPointConstants.CURRENT_BP, this.curBp)
+        //update data
+        this.init().curBp = this.curBp
       }
     } catch (err) {
-      console.log("getDisplayByIdSync failed err" + err.code)
+      Logger.error("getDisplayByIdSync failed err" + err.code)
     }
   }
 }
