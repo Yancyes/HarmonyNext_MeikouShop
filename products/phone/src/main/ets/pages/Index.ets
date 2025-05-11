@@ -1,4 +1,14 @@
-import { auth, BreakPointConstants, cart, EmitterKey, MkNavPathStack, SafeAreaConstants } from 'basic'
+import {
+  auth,
+  BreakPointConstants,
+  Cart,
+  cart,
+  currentBreakPoint,
+  CurrentBreakPoint,
+  EmitterKey,
+  fullScreen,
+  MkNavPathStack
+} from 'basic'
 import { CartView } from 'cart'
 import { CategoryView } from 'category'
 import { HomeView } from 'home'
@@ -15,7 +25,7 @@ interface TabItem {
 @ComponentV2
 struct Index {
   @Local activeIndex: number = 0
-  breakPoint: string = AppStorage.get(BreakPointConstants.CURRENT_BP) as string
+  @Local breakPoint: CurrentBreakPoint = currentBreakPoint.init()
   list: TabItem[] = [
     { text: '首页', normal: $r('app.media.ic_public_home_normal'), active: $r('app.media.ic_public_home_active') },
     { text: '分类', normal: $r('app.media.ic_public_pro_normal'), active: $r('app.media.ic_public_pro_active') },
@@ -23,12 +33,12 @@ struct Index {
     { text: '我的', normal: $r('app.media.ic_public_my_normal'), active: $r('app.media.ic_public_my_active') },
   ]
   @Provider() navPath: NavPathStack = MkNavPathStack
-  safeBottom: number = AppStorage.get(SafeAreaConstants.BOTTOM) as number
-  @Local cartCount: number = cart.init().count
+  @Local safeBottom: number = fullScreen.init().bottomArea
+  @Local cart: Cart = cart.init()
 
-  aboutToAppear(): void {
+  async aboutToAppear(): Promise<void> {
     this.registerEvent()
-    cart.getCount()
+    await cart.getCount()
   }
 
   registerEvent() {
@@ -59,8 +69,8 @@ struct Index {
       .onTabBarClick(index => {
         this.activeIndex = index
       })
-      .barPosition(this.breakPoint === BreakPointConstants.LG ? BarPosition.Start : BarPosition.End)
-      .vertical(this.breakPoint === BreakPointConstants.LG)
+      .barPosition(this.breakPoint.curBp === BreakPointConstants.LG ? BarPosition.Start : BarPosition.End)
+      .vertical(this.breakPoint.curBp === BreakPointConstants.LG)
       .padding({ bottom: this.safeBottom })
     }.mode(NavigationMode.Stack)
     .hideTitleBar(true)
@@ -69,7 +79,7 @@ struct Index {
   @Builder
   TabItemBuilder(item: TabItem, index: number) {
     Badge({
-      count: (index === 2 && auth.getUser().token) ? this.cartCount : 0,
+      count: (index === 2 && auth.getUser().token) ? this.cart.count : 0,
       style: {},
     }) {
       Column() {
