@@ -17,6 +17,8 @@ export class ViewsConstants {
   static readonly GOODS_VIEW: string = 'GoodsView'
   static readonly CART_VIEW: string = 'CartView'
   static readonly CHECK_VIEW: string = 'CheckView'
+  static readonly ADDRESS_MANAGE_VIEW: string = 'AddressManageView'
+  static readonly ADDRESS_CREATE_VIEW: string = 'AddressCreateView'
 }
 
 export class EmitterKey {
