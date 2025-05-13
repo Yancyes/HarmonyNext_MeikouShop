@@ -3,16 +3,30 @@ interface Common {
   name: string
   picture: ResourceStr
 }
+
 interface title {
   title: string
 }
+
+export interface AddressItem {
+  address: string
+  contact: string
+  fullLocation: string
+  id: string
+  isDefault: 0 | 1
+  receiver: string
+  provinceCode: number
+  cityCode: number
+  countyCode: number
+}
+
 export interface MkGoodsItem extends Common {
   desc: string
   price: string
   orderNum: number
 }
 
-export interface CategoryItem extends Common{
+export interface CategoryItem extends Common {
   children?: CategoryItemChild[]
   goods?: MkGoodsItem[]
 }
