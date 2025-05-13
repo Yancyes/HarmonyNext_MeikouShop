@@ -1,4 +1,4 @@
-import { auth, Logger, MkCell, MkCellGroup, MkNavbar, MkUser } from 'basic'
+import { auth, Logger, MkCell, MkCellGroup, MkNavbar, MkUser, ViewsConstants } from 'basic'
 
 @Builder
 function SettingsViewBuilder() {
@@ -55,6 +55,9 @@ export struct SettingsView {
 
         MkCellGroup() {
           MkCell({ label: '收货地址管理' })
+            .onClick(()=>{
+              this.navPath.pushPath({name:ViewsConstants.ADDRESS_MANAGE_VIEW})
+            })
           MkCell({ label: '账号安全' })
           MkCell({ label: '消息设置' })
           MkCell({ label: '隐私设置' })
