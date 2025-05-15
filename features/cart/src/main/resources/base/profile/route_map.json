@@ -4,6 +4,11 @@
       "name": "CartView",
       "pageSourceFile": "src/main/ets/views/CartView.ets",
       "buildFunction": "CartViewBuilder"
+    },
+    {
+      "name": "CheckView",
+      "pageSourceFile": "src/main/ets/views/CheckView.ets",
+      "buildFunction": "CheckViewBuilder"
     }
   ]
 }
