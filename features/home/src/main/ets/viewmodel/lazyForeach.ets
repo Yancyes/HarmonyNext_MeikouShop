@@ -3,7 +3,7 @@ class BasicDataSource<T> implements IDataSource {
   private originDataArray: T[] = [];
 
   public totalCount(): number {
-    return 0;
+    return this.originDataArray.length;
   }
 
   public getData(index: number): T {
