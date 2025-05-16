@@ -1,4 +1,4 @@
-import { cart, fullScreen, Logger, MkCell, MkNavbar } from 'basic'
+import { cart, fullScreen, Logger, MkCell, MkNavbar, ViewsConstants } from 'basic'
 import { AddressItem, CreateOrderParamsGoods, OrderGoodsItem, Summary } from '../viewmodel'
 import { promptAction } from '@kit.ArkUI'
 import { createOrderApi, getOrderPreApi } from '../api'
@@ -21,7 +21,7 @@ export struct CheckView {
   @Local addressId: string = ''
   @Local loading: boolean = false
   payChannels = ['支付宝', '微信支付', '华为支付']
-
+  @Consumer() navPath:NavPathStack = new NavPathStack()
   async getData() {
     //getBillingInformation
     const res = await getOrderPreApi()
@@ -60,6 +60,8 @@ export struct CheckView {
     this.loading = false
     this.showPaySheet = false
     cart.getCount() //refresh cart count
+    //redirectToThePaymentPageAndPassTheOrderID
+    this.navPath.pushPathByName(ViewsConstants.PAY_VIEW,res.data.result.id)
   }
 
   @Builder

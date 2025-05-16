@@ -462,7 +462,7 @@ struct GoodsCommentComp {
           }
           .width('100%')
 
-          Text('HUAWEI Pura 70 Ultra 创新性采用超聚光伸缩主摄，搭载1英寸大底传感器、以及1英寸传感器中最大的F1.6物理光圈，带来业界最大的主摄进光量。')
+          Text(this.goods.desc)
             .fontColor($r('[basic].color.text'))
             .fontSize(13)
 

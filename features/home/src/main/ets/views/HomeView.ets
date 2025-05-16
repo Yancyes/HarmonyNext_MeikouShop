@@ -133,6 +133,9 @@ export struct HomeView {
         ForEach(params.list, (item: MkGoodsItem) => {
           ListItem() {
             DiscountGoodsComp({ type: DiscountType.DISCOUNT, goods: item })
+              .onClick(()=>{
+                this.navPath.pushPathByName(ViewsConstants.GOODS_VIEW, item)
+              })
           }
         })
       }
@@ -183,7 +186,7 @@ export struct HomeView {
                 new BreakPointType({ sm: 0, md: 10, lg: 20 })
                   .getValue(this.breakPoint.curBp)
               )
-
+              //search
               Row() {
                 Row({ space: 4 }) {
                   Image($r('[basic].media.ic_public_search'))
@@ -225,7 +228,6 @@ export struct HomeView {
                     .width(60)
                     .height(80)
                     .borderRadius(30)
-
                     .clip(true)
                     .backgroundImage(item.picture)
                     .backgroundImageSize(ImageSize.Contain)
@@ -256,6 +258,9 @@ export struct HomeView {
                     ForEach(this.saleGoods, (item: MkGoodsItem) => {
                       ListItem() {
                         DiscountGoodsComp({ goods: item })
+                          .onClick(()=>{
+                            this.navPath.pushPathByName(ViewsConstants.GOODS_VIEW, item)
+                          })
                       }
                     })
                   }
@@ -305,6 +310,9 @@ export struct HomeView {
                   ForEach(this.newGoods, (item: MkGoodsItem) => {
                     ListItem() {
                       DiscountGoodsComp({ type: DiscountType.NEW, goods: item })
+                        .onClick(()=>{
+                          this.navPath.pushPathByName(ViewsConstants.GOODS_VIEW, item)
+                        })
                     }
                   })
                 }
