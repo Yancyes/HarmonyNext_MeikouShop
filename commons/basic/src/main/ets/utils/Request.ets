@@ -7,10 +7,10 @@ interface APIErrorType {
   msg: string
   code: number
 }
-
+export const baseURL = 'https://meikou-api.itheima.net/'
 //create axios instance
 export const instance = axios.create({
-  baseURL: 'https://meikou-api.itheima.net/',
+  baseURL,
   timeout: 20000,
 })
 
