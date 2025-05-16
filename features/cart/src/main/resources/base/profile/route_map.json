@@ -9,6 +9,16 @@
       "name": "CheckView",
       "pageSourceFile": "src/main/ets/views/CheckView.ets",
       "buildFunction": "CheckViewBuilder"
+    },
+    {
+      "name": "PayView",
+      "pageSourceFile": "src/main/ets/views/PayView.ets",
+      "buildFunction": "PayViewBuilder"
+    },
+    {
+      "name": "PayResultView",
+      "pageSourceFile": "src/main/ets/views/PayResultView.ets",
+      "buildFunction": "PayResultViewBuilder"
     }
   ]
 }
