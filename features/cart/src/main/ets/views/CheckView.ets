@@ -1,4 +1,4 @@
-import { cart, fullScreen, Logger, MkCell, MkNavbar, ViewsConstants } from 'basic'
+import { cart, fullScreen, Logger, MkCell, MkNavbar, MkNavPathStack, ViewsConstants } from 'basic'
 import { AddressItem, CreateOrderParamsGoods, OrderGoodsItem, Summary } from '../viewmodel'
 import { promptAction } from '@kit.ArkUI'
 import { createOrderApi, getOrderPreApi } from '../api'
@@ -21,7 +21,7 @@ export struct CheckView {
   @Local addressId: string = ''
   @Local loading: boolean = false
   payChannels = ['支付宝', '微信支付', '华为支付']
-  @Consumer() navPath:NavPathStack = new NavPathStack()
+
   async getData() {
     //getBillingInformation
     const res = await getOrderPreApi()
@@ -61,7 +61,7 @@ export struct CheckView {
     this.showPaySheet = false
     cart.getCount() //refresh cart count
     //redirectToThePaymentPageAndPassTheOrderID
-    this.navPath.pushPathByName(ViewsConstants.PAY_VIEW,res.data.result.id)
+    MkNavPathStack.pushPathByName(ViewsConstants.PAY_VIEW, res.data.result.id)
   }
 
   @Builder
@@ -147,7 +147,11 @@ export struct CheckView {
   build() {
     NavDestination() {
       Column() {
-        MkNavbar({ title: '结算' })
+        MkNavbar({
+          title: '结算', leftClickHandler: () => {
+            MkNavPathStack.pop()
+          }
+        })
           .border({
             width: { bottom: 0.5 },
             color: '#e4e4e4'
@@ -264,16 +268,18 @@ export struct CheckView {
           subtitle: '请选择一种支付方式进行付款'
         }, height: SheetSize.FIT_CONTENT, backgroundColor: $r('[basic].color.white')
       })
+      .onVisibleAreaChange([0,1],()=>{
+        this.getData()
+      })
     }
     .hideTitleBar(true)
-
   }
 }
 
 
 @ComponentV2
 struct ChangeAddressComp {
-  @Param addressList: AddressItem[] = []
+  @Require @Param addressList: AddressItem[]
   @Local currentAddress: AddressItem = {} as AddressItem
   @Event onChangeAddress: (address: AddressItem) => void = () => {
 
@@ -351,11 +357,11 @@ struct ChangeAddressComp {
   }
 }
 
-@Component
+@ComponentV2
 struct PriceCell {
-  @Prop label: string
-  @Prop price: number = 0
-  @Prop isRed: boolean = false
+  @Param label: string = ''
+  @Param price: number = 0
+  @Param isRed: boolean = false
 
   @Builder
   PriceBuilder() {
@@ -383,9 +389,8 @@ struct CheckCell {
 
   @Builder
   CheckBuilder() {
-    Checkbox()
-      .selectedColor($r('[basic].color.red'))
-      .select(this.checked)
+    Radio({ value: 'pay', group: 'payWay' })
+      .checked(this.checked)
       .onClick(() => {
         this.onClickBox()
       })
