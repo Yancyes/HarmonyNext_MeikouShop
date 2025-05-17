@@ -1,6 +1,5 @@
-import { MkGuess, MkNavbar, ViewsConstants } from 'basic'
+import { MkNavbar, ViewsConstants } from 'basic'
 import { MkGuessComp } from 'home'
-
 
 @Builder
 function PayResultViewBuilder() {
@@ -9,12 +8,20 @@ function PayResultViewBuilder() {
 
 @ComponentV2
 export struct PayResultView {
-  @Param payResult: boolean = false
-  @Param orderId: string = ''
+  @Local payResult: boolean = false
+  @Local orderId: string = ''
   @Consumer() navPath: NavPathStack = new NavPathStack()
 
   aboutToAppear(): void {
-
+    //getPageParameters
+    const params = this.navPath.getParamByName(ViewsConstants.PAY_RESULT_VIEW).pop() as string
+    if (params) {
+      //parsingParameters
+      const payResult = params.split('&')[0].split('=')[1]
+      const orderId = params.split('&')[1].split('=')[1]
+      this.orderId = orderId
+      this.payResult = payResult === 'true' ? true : false
+    }
   }
 
   build() {
