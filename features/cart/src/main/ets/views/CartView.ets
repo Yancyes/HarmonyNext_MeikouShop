@@ -124,6 +124,9 @@ export struct CartView {
                       // updateThePage
                       this.cartList.splice(index, 1, item)
                     }
+                  }).onClick(()=>{
+                    // go to the product details page
+                    this.navPath.pushPathByName(ViewsConstants.GOODS_VIEW,item)
                   })
                 }
                 .backgroundColor($r('[basic].color.under'))
