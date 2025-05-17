@@ -20,6 +20,7 @@ export class ViewsConstants {
   static readonly ADDRESS_MANAGE_VIEW: string = 'AddressManageView'
   static readonly ADDRESS_CREATE_VIEW: string = 'AddressCreateView'
   static readonly PAY_VIEW: string = 'PayView'
+  static readonly PAY_RESULT_VIEW: string = 'PayResultView'
   static readonly ORDER_VIEW: string = 'OrderView'
 }
 
