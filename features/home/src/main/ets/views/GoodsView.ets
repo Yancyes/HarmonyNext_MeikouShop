@@ -31,7 +31,8 @@ export struct GoodsView {
     customStyle: true
   })
   tabs: string[] = ['商品', '评价', '详情', '推荐']
-  @Local cart:Cart = cart.init()
+  @Local cart: Cart = cart.init()
+
   setStatusBar() {
     window.getLastWindow(getContext())
       .then((win) => {
@@ -122,7 +123,8 @@ export struct GoodsView {
             Counter() {
               Text(this.count.toString())
             }
-            .enableInc(this.count < (this.sku.inventory || this.goods.inventory)) // addLessThanTheInventoryCanAlsoBeAdded
+            .enableInc(this.count <
+              (this.sku.inventory || this.goods.inventory)) // addLessThanTheInventoryCanAlsoBeAdded
             .enableDec(this.count > 1) // minusMoreThan1CanAlsoBeReduced
             .onInc(() => {
               this.count++
@@ -184,26 +186,27 @@ export struct GoodsView {
 
   async addToCart() {
     const token = auth.getUser().token
-    if(!token){
-      promptAction.showToast({message:'请登录后下单'})
-      this.navPath.pushPath({name:ViewsConstants.LOGIN_VIEW})
+    if (!token) {
+      promptAction.showToast({ message: '请登录后下单' })
+      this.navPath.pushPath({ name: ViewsConstants.LOGIN_VIEW })
       return
     }
     //Determine whether the user has a product selection rule
-    if(!this.sku.id){
-      promptAction.showToast({message:'请选择要购买的商品规格'})
+    if (!this.sku.id) {
+      promptAction.showToast({ message: '请选择要购买的商品规格' })
       return
     }
     //addToCart
     this.loading = true
-    await cart.add({skuId:this.sku.id,count:this.count})
+    await cart.add({ skuId: this.sku.id, count: this.count })
     this.loading = false
-    promptAction.showToast({message:'加入购物袋成功'})
+    promptAction.showToast({ message: '加入购物袋成功' })
     //close sheet
     this.showSheet = false
     //updateCartCount
     cart.getCount()
   }
+
   build() {
     Column() {
       MkNavbar({
@@ -250,6 +253,7 @@ export struct GoodsView {
       }
       .layoutWeight(1)
       .backgroundColor($r('[basic].color.under'))
+
       //  bottom icon
       Row() {
         Image($r('[basic].media.ic_public_like'))
@@ -264,7 +268,7 @@ export struct GoodsView {
           Image($r('[basic].media.ic_public_cart'))
             .iconButton()
             .onClick(() => {
-              this.navPath.pushPathByName(ViewsConstants.CART_VIEW,true )
+              this.navPath.pushPathByName(ViewsConstants.CART_VIEW, true)
             })
         }
 
@@ -438,7 +442,7 @@ struct GoodsCommentComp {
       .width('100%')
       .height(40)
 
-      ForEach(new Array(2).fill(0), () => {
+      ForEach([1], () => {
         Column({ space: 8 }) {
           Row() {
             Image($r('app.media.goods_avatar'))
@@ -462,9 +466,11 @@ struct GoodsCommentComp {
           }
           .width('100%')
 
-          Text(this.goods.desc)
-            .fontColor($r('[basic].color.text'))
-            .fontSize(13)
+          Row() {
+            Text(this.goods.desc)
+              .fontColor($r('[basic].color.text'))
+              .fontSize(13)
+          }.width('100%')
 
           Row({ space: 8 }) {
             ForEach(new Array(3).fill(0), () => {
