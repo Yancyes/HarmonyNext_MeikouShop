@@ -22,6 +22,7 @@ export class ViewsConstants {
   static readonly PAY_VIEW: string = 'PayView'
   static readonly PAY_RESULT_VIEW: string = 'PayResultView'
   static readonly ORDER_VIEW: string = 'OrderView'
+  static readonly ORDER_LOGISTICS_VIEW: string = 'OrderLogisticsView'
 }
 
 export class EmitterKey {
