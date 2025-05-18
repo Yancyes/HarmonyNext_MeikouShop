@@ -141,6 +141,7 @@ export struct MyView {
                   NavComp({ icon: $r('app.media.ic_user_order'), text: '全部订单' })
                     .onClick(() => {
                       // TODO orderPageNoParameters
+                      this.navPath.pushPathByName(ViewsConstants.ORDER_VIEW,0)
                     })
                 }
 
@@ -148,6 +149,7 @@ export struct MyView {
                   NavComp({ icon: $r('app.media.ic_user_obligation'), text: '待付款' })
                     .onClick(() => {
                       // TODO orderPageNoParameterOrderState1
+                      this.navPath.pushPathByName(ViewsConstants.ORDER_VIEW,1)
                     })
                 }
 
@@ -155,6 +157,8 @@ export struct MyView {
                   NavComp({ icon: $r('app.media.ic_user_unreceived'), text: '待发货' })
                     .onClick(() => {
                       // TODO orderPageNoParameterOrderState2
+                      this.navPath.pushPathByName(ViewsConstants.ORDER_VIEW,2)
+
                     })
                 }
 
@@ -162,6 +166,8 @@ export struct MyView {
                   NavComp({ icon: $r('app.media.ic_user_unshipped'), text: '待收货' })
                     .onClick(() => {
                       // TODO orderPageNoParameterOrderState3
+                      this.navPath.pushPathByName(ViewsConstants.ORDER_VIEW,3)
+
                     })
                 }
 
@@ -169,6 +175,7 @@ export struct MyView {
                   NavComp({ icon: $r('app.media.ic_user_unevaluated'), text: '待评价' })
                     .onClick(() => {
                       // TODO orderPageNoParameterOrderState4
+                      this.navPath.pushPathByName(ViewsConstants.ORDER_VIEW,4)
                     })
                 }
               }
