@@ -45,7 +45,7 @@ export struct PayView {
               controller: this.webviewController
             }).onPageBegin((event) => {
               Logger.info(event)
-              //判断url路径是否为支付完成的页面
+              //Check whether the URL path is the page where the payment was completed
               if (event.url.includes('/pay/redirect?')) {
                 const search = event.url.split('?')[1]
                 //replaceWithThePaymentResultsPage
@@ -68,7 +68,7 @@ export struct PayView {
       .height('100%')
     }
     .hideTitleBar(true)
-    .onBackPressed(()=>{
+    .onBackPressed(()=>{//systemLevel
       this.showDialog()
       return true
     })
