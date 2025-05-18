@@ -24,6 +24,11 @@
       "name": "OrderView",
       "pageSourceFile": "src/main/ets/views/OrderView.ets",
       "buildFunction": "OrderViewBuilder"
+    },
+    {
+      "name": "OrderLogisticsView",
+      "pageSourceFile": "src/main/ets/views/OrderLogisticsView.ets",
+      "buildFunction": "OrderLogisticsViewBuilder"
     }
   ]
 }
