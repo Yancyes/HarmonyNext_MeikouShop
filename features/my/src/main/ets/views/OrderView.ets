@@ -1,6 +1,6 @@
-import { fullScreen, MkDialogLoading, MkEmpty, MkNavbar, MkTabs, ViewsConstants } from 'basic'
+import { fullScreen, MkDialogLoading, MkEmpty, MkNavbar, MkNavPathStack, MkTabs, ViewsConstants } from 'basic'
 import { OrderItem, OrderSku } from '../viewmodel'
-import { promptAction, router } from '@kit.ArkUI'
+import { promptAction } from '@kit.ArkUI'
 import { consignmentApi, getOrderApi } from '../apis'
 import { GoodsItemsDataSource } from 'home/src/main/ets/viewmodel/lazyForeach'
 import { deviceInfo } from '@kit.BasicServicesKit'
@@ -257,7 +257,7 @@ struct OrderItemComp {
         Button('查看物流')
           .whiteStyle()
           .onClick(() => {
-            router.pushUrl({ url: 'pages/OrderLogisticsPage' })
+            MkNavPathStack.pushPathByName(ViewsConstants.ORDER_LOGISTICS_VIEW, this.order.id)
           })
       }
       if ([1].includes(this.order.orderState)) {
