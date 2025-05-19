@@ -29,6 +29,11 @@
       "name": "OrderLogisticsView",
       "pageSourceFile": "src/main/ets/views/OrderLogisticsView.ets",
       "buildFunction": "OrderLogisticsViewBuilder"
+    },
+    {
+      "name": "RecommendView",
+      "pageSourceFile": "src/main/ets/views/RecommendView.ets",
+      "buildFunction": "RecommendViewBuilder"
     }
   ]
 }
