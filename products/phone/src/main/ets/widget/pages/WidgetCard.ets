@@ -7,7 +7,20 @@ struct WidgetCard {
 
   @LocalStorageProp('fileNameList') fileNameList: string[] = []
   // theDefaultCardIDIsEmpty
-  @LocalStorageProp('formId') formId: string = ''
+  @LocalStorageProp('formId')
+  @Watch('formIdChange')
+  formId: string = ''
+
+  formIdChange() {
+    postCardAction(this, {
+      action: 'call',
+      abilityName: 'EntryAbility',
+      params: {
+        method: 'formIdChange',
+        formId: this.formId
+      }
+    })
+  }
   build() {
     Column() {
       Row({space:10}) {
