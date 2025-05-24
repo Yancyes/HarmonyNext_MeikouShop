@@ -3,6 +3,7 @@ import { AppStorageV2, KeyboardAvoidMode, window } from '@kit.ArkUI';
 import {
   auth,
   currentBreakPoint,
+  FormIdManager,
   fullScreen,
   getGuessLikeApi,
   guessLike,
@@ -56,11 +57,24 @@ export default class EntryAbility extends UIAbility {
             imageList,
             (formInfo: formBindingData.FormBindingData) => {
               // Update the data associated with the card and refresh the image of the card based on the ID
+              FormIdManager.getFormIdList()
+                .forEach(v=>{
+                  formProvider.updateForm(v, formInfo)
+                })
               formProvider.updateForm(dataObj.formId, formInfo)
             }
           )
           download.startLoad()
         })
+      //justPreventErrors
+      return new Params()
+    })
+    FormIdManager.context = this.context
+    this.callee.on('formIdChange',(data)=>{
+      const res = JSON.parse(data.readString()) as Record<string, string>
+      //addToPreferences
+      FormIdManager.addFormId(res.formId)
+      //justPreventErrors
       return new Params()
     })
   }
@@ -95,6 +109,8 @@ export default class EntryAbility extends UIAbility {
         MkNavPathStack.pushPath({ name: this.targetPage })
       }
     })
+    //  init FormIdManager
+    FormIdManager.context = this.context
   }
 
   onWindowStageDestroy(): void {
