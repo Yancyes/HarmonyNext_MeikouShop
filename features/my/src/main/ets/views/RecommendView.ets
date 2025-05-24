@@ -1,4 +1,5 @@
-import { guessLike, MkGoodsItem, MkNavbar } from 'basic'
+import { FormIdManager, getGuessLikeApi, guessLike, LoadImageForFormData, MkGoodsItem, MkNavbar } from 'basic'
+import { formBindingData, formProvider } from '@kit.FormKit'
 
 @Builder
 function RecommendViewBuilder() {
@@ -14,6 +15,24 @@ export struct RecommendView {
   // carousel
   swiperController: SwiperController = new SwiperController()
 
+  async getData(){
+    const res = await getGuessLikeApi()
+    this.list = res.data.result.items
+    const imgUrls = this.list.map(item => item.picture as string).slice(0, 2)
+    const downLoad = new LoadImageForFormData(
+      getContext(),
+      imgUrls,
+      (formInfo: formBindingData.FormBindingData)=>{
+        //getTheCardID
+        const ids = FormIdManager.getFormIdList()
+        //thereMayBeMoreThanOneCardUpdateAllCards
+        ids.forEach(id=>{
+          formProvider.updateForm(id, formInfo)
+        })
+      }
+    )
+    downLoad.startLoad()
+  }
   build() {
     NavDestination() {
       Column() {
@@ -85,7 +104,7 @@ export struct RecommendView {
           .justifyContent(FlexAlign.Center)
           .backgroundColor('#00C6C6')
           .onClick(() => {
-
+            this.getData()
           })
         }
         .width('100%')
