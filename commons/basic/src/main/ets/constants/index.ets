@@ -8,8 +8,6 @@ export class BreakPointConstants {
 }
 
 export class ViewsConstants {
-  static readonly HOME_VIEW: string = 'HomeView'
-  static readonly CATEGORY_VIEW: string = 'CategoryView'
   static readonly SEARCH_VIEW: string = 'SearchView'
   static readonly SEARCH_RESULT_VIEW: string = 'SearchResultView'
   static readonly LOGIN_VIEW: string = 'LoginView'
